@@ -168,7 +168,13 @@ export default function Portfolio() {
                 </div>
 
                 <div className="mt-8">
-                  <Button variant="secondary">Download Resumo</Button>
+                  <a
+                    href="/curriculo-lucas.pdf"
+                    download
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:text-zinc-700 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2"
+                  >
+                    Download Currículo
+                    </a>
                 </div>
               </GlassmorphicCard>
             </div>
