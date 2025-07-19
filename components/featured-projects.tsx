@@ -165,7 +165,19 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
                 {project.name}
               </h3>
-              <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify">{project.description}</p>
+              <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify">
+                {project.description}
+              </p>
+
+              {/* Fallback visual para README ausente */}
+              {(!project.readmeContent || project.readmeContent.trim() === "") && (
+                <div className="flex items-center gap-2 mb-4 animate-pulse group/readme-fallback">
+                  <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span className="text-yellow-300 text-xs md:text-sm" title="README.md não encontrado ou não pôde ser carregado. Adicione um README.md ao repositório para exibir detalhes completos.">
+                    README.md não encontrado ou não pôde ser carregado.
+                  </span>
+                </div>
+              )}
 
               {/* Tecnologias */}
               <div className="flex flex-wrap gap-2 mb-4">

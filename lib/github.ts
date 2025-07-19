@@ -1,6 +1,6 @@
 "use client"
 
-import { Repo, Skill, FeaturedProject } from '@/types/github'
+import { Repo, Skill, FeaturedProject } from '../types/github'
 
 const CACHE_KEY = "github_skills_cache";
 const CACHE_TIME = 60 * 60 * 1000; // 1 hora
@@ -150,19 +150,29 @@ async function fetchUserRepos(username: string): Promise<Repo[]> {
       console.log('[DEBUG] Fetching README from:', readmeUrl);
       const readmeRes = await fetch(readmeUrl, { headers });
       console.log('[DEBUG] Status da resposta README:', readmeRes.status);
+      if (readmeRes.status === 404) {
+        repo.readme_content = '';
+        repo.readme_error = 'README não encontrado (404).';
+        console.log(`[DIAGNOSTIC] README.md não encontrado para ${repo.name}`);
+        console.log(`[LOG][READMEBUSCA] 404 para ${repo.name} | URL: ${readmeUrl}`);
+        continue;
+      }
       const readmeText = await readmeRes.text();
-      console.log('[DEBUG] Corpo da resposta README:', readmeText);
       if (readmeRes.ok) {
         const readmeData = JSON.parse(readmeText);
         repo.readme_content = atob(readmeData.content);
+        console.log(`[LOG][READMEBUSCA] README.md carregado para ${repo.name}`);
       } else {
         repo.readme_content = '';
         repo.readme_error = 'README não disponível ou não encontrado.';
+        console.log(`[DIAGNOSTIC] Erro ao buscar README.md para ${repo.name}: status ${readmeRes.status}`);
+        console.log(`[LOG][READMEBUSCA] Erro ao buscar README.md para ${repo.name} | Status: ${readmeRes.status} | URL: ${readmeUrl}`);
       }
     } catch (error) {
       console.log('[DEBUG] Erro ao buscar README:', error);
       repo.readme_content = '';
       repo.readme_error = 'README não disponível ou erro ao buscar.';
+      console.log(`[LOG][READMEBUSCA] Exceção ao buscar README.md para ${repo.name} | Erro: ${error}`);
     }
   }
   return repos;
@@ -187,20 +197,28 @@ async function fetchStarredRepos(username: string): Promise<Repo[]> {
       console.log('[DEBUG] Fetching README from:', readmeUrl);
       const readmeRes = await fetch(readmeUrl, { headers });
       console.log('[DEBUG] Status da resposta README:', readmeRes.status);
+      if (readmeRes.status === 404) {
+        repo.readme_content = '';
+        repo.readme_error = 'README não encontrado (404).';
+        console.log(`[DIAGNOSTIC] README.md não encontrado para ${repo.name}`);
+        console.log(`[LOG][READMEBUSCA] 404 para ${repo.name} | URL: ${readmeUrl}`);
+        continue;
+      }
       const readmeText = await readmeRes.text();
-      console.log('[DEBUG] Corpo da resposta README:', readmeText);
       if (readmeRes.ok) {
         const readmeData = JSON.parse(readmeText);
-        // Decodificar base64 para UTF-8 corretamente
         repo.readme_content = decodeURIComponent(escape(atob(readmeData.content)));
       } else {
         repo.readme_content = '';
         repo.readme_error = 'README não disponível ou não encontrado.';
+        console.log(`[DIAGNOSTIC] Erro ao buscar README.md para ${repo.name}: status ${readmeRes.status}`);
+        console.log(`[LOG][READMEBUSCA] Erro ao buscar README.md para ${repo.name} | Status: ${readmeRes.status} | URL: ${readmeUrl}`);
       }
     } catch (error) {
       console.log('[DEBUG] Erro ao buscar README:', error);
       repo.readme_content = '';
       repo.readme_error = 'README não disponível ou erro ao buscar.';
+      console.log(`[LOG][READMEBUSCA] Exceção ao buscar README.md para ${repo.name} | Erro: ${error}`);
     }
   }
   return repos;
@@ -335,27 +353,23 @@ function parseFeaturedProject(repo: Repo): FeaturedProject | null {
 function extractImageFromReadme(readme: string): string {
   // Look for markdown images: ![alt](url)
   const imageRegex = /!\[.*?\]\((.*?)\)/g
-  const matches = [...readme.matchAll(imageRegex)]
-  
-  if (matches.length > 0) {
-    // Return the first image found
-    return matches[0][1]
+  let match = imageRegex.exec(readme);
+  if (match) {
+    return match[1];
   }
 
   // Look for HTML img tags
   const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi
-  const imgMatches = [...readme.matchAll(imgRegex)]
-  
-  if (imgMatches.length > 0) {
-    return imgMatches[0][1]
+  match = imgRegex.exec(readme);
+  if (match) {
+    return match[1];
   }
 
   // Look for image URLs in the text
   const urlRegex = /https?:\/\/[^\s)]+\.(jpg|jpeg|png|gif|webp|svg)/gi
-  const urlMatches = [...readme.matchAll(urlRegex)]
-  
-  if (urlMatches.length > 0) {
-    return urlMatches[0][0]
+  match = urlRegex.exec(readme);
+  if (match) {
+    return match[0];
   }
 
   return ''
