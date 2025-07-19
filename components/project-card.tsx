@@ -58,10 +58,19 @@ export function ProjectCard({ title, description, tags, image, demoUrl, repoUrl 
             </div>
 
             <div className="flex justify-between mt-auto pt-4 border-t border-zinc-700/50">
-              <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white hover:bg-zinc-700/50" asChild>
-                <Link href={repoUrl} target="_blank" rel="noopener noreferrer">
-                  <Github className="mr-2 h-4 w-4" />
-                  Code
+              <Button
+                size="sm"
+                className={`
+                  ${repoUrl ? '!bg-[#24292f] !text-black hover:!bg-[#33373c] hover:!text-black' : 'bg-white'}
+                  border-0 flex items-center gap-2 transition-colors duration-200
+                  ${!repoUrl ? 'pointer-events-none opacity-60' : ''}
+                `}
+                asChild
+                disabled={!repoUrl}
+              >
+                <Link href={repoUrl || '#'} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" />
+                  Código
                 </Link>
               </Button>
               <Button

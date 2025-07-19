@@ -13,6 +13,10 @@ export interface Repo {
   topics: string[]
   readme_content?: string
   languages_url: string
+  readme_error?: string // mensagem de erro amigável ao buscar README
+  owner: {
+    login: string
+  }
 }
 
 export interface Skill {

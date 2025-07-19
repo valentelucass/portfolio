@@ -155,14 +155,58 @@ async function fetchUserRepos(username: string): Promise<Repo[]> {
       if (readmeRes.ok) {
         const readmeData = JSON.parse(readmeText);
         repo.readme_content = atob(readmeData.content);
+      } else {
+        repo.readme_content = '';
+        repo.readme_error = 'README não disponível ou não encontrado.';
       }
     } catch (error) {
       console.log('[DEBUG] Erro ao buscar README:', error);
+      repo.readme_content = '';
+      repo.readme_error = 'README não disponível ou erro ao buscar.';
     }
   }
   return repos;
 }
 
+// Nova função para buscar apenas repositórios estrelados pelo usuário
+async function fetchStarredRepos(username: string): Promise<Repo[]> {
+  const url = `https://api.github.com/users/${username}/starred?per_page=100`;
+  const headers = getAuthHeaders();
+  console.log('[DEBUG] Fetching starred repos from:', url);
+  const reposRes = await fetch(url, { headers });
+  console.log('[DEBUG] Status da resposta (starred):', reposRes.status);
+  const text = await reposRes.text();
+  console.log('[DEBUG] Corpo da resposta (starred):', text);
+  if (!reposRes.ok) {
+    throw new Error(`Erro ao buscar repositórios estrelados: ${reposRes.status} | Body: ${text}`);
+  }
+  const repos: Repo[] = JSON.parse(text);
+  for (const repo of repos) {
+    try {
+      const readmeUrl = `https://api.github.com/repos/${repo.owner.login}/${repo.name}/readme`;
+      console.log('[DEBUG] Fetching README from:', readmeUrl);
+      const readmeRes = await fetch(readmeUrl, { headers });
+      console.log('[DEBUG] Status da resposta README:', readmeRes.status);
+      const readmeText = await readmeRes.text();
+      console.log('[DEBUG] Corpo da resposta README:', readmeText);
+      if (readmeRes.ok) {
+        const readmeData = JSON.parse(readmeText);
+        // Decodificar base64 para UTF-8 corretamente
+        repo.readme_content = decodeURIComponent(escape(atob(readmeData.content)));
+      } else {
+        repo.readme_content = '';
+        repo.readme_error = 'README não disponível ou não encontrado.';
+      }
+    } catch (error) {
+      console.log('[DEBUG] Erro ao buscar README:', error);
+      repo.readme_content = '';
+      repo.readme_error = 'README não disponível ou erro ao buscar.';
+    }
+  }
+  return repos;
+}
+
+// Alterar getFeaturedProjects para usar fetchStarredRepos
 export async function getFeaturedProjects(username: string): Promise<FeaturedProject[]> {
   if (typeof window === 'undefined') {
     return getFallbackProjects()
@@ -181,31 +225,38 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
 
   try {
     console.log('Fetching featured projects for:', username)
-    const repos = await fetchUserRepos(username)
-    console.log('Total repos found:', repos.length)
+    // Buscar apenas repositórios estrelados
+    const repos = await fetchStarredRepos(username)
+    console.log('Total starred repos found:', repos.length)
     
     const featuredProjects: FeaturedProject[] = []
 
     for (const repo of repos) {
-      console.log(`Checking repo: ${repo.name}`)
-      if (repo.readme_content) {
-        console.log(`README content length: ${repo.readme_content.length}`)
-        if (repo.readme_content.includes('<!-- PORTFOLIO-FEATURED -->')) {
-          console.log(`Found PORTFOLIO-FEATURED in ${repo.name}`)
-          const project = parseFeaturedProject(repo)
-          if (project) {
-            console.log(`Parsed project: ${project.name}`)
-            featuredProjects.push(project)
-          }
-        } else {
-          console.log(`No PORTFOLIO-FEATURED found in ${repo.name}`)
-        }
-      } else {
-        console.log(`No README content for ${repo.name}`)
+      console.log(`[DEBUG][PORTFOLIO] Chamando parseFeaturedProject para: ${repo.name}`);
+      if (!repo.readme_content) {
+        console.log(`[DEBUG][PORTFOLIO] Repo sem readme_content: ${repo.name}`);
+        continue;
       }
+      console.log('[DEBUG][PORTFOLIO] Início do README:', repo.readme_content?.substring(0, 500));
+      const meta = extractFeaturedMetadata(repo.readme_content);
+      console.log('[DEBUG][PORTFOLIO] Metadados extraídos do README:', meta);
+      if (!meta) continue;
+      const project = {
+        id: repo.id,
+        name: meta.title || repo.name,
+        description: meta.description || repo.description || '',
+        technologies: meta.technologies ? meta.technologies.split(',').map(t => t.trim()) : [],
+        demoUrl: meta.demo,
+        githubUrl: repo.html_url,
+        highlight: meta.highlight,
+        imageUrl: meta.image ? `https://raw.githubusercontent.com/${repo.owner.login}/${repo.name}/main/${meta.image}` : undefined,
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        updatedAt: repo.updated_at,
+        readmeContent: repo.readme_content,
+      };
+      featuredProjects.push(project);
     }
-
-    console.log('Total featured projects found:', featuredProjects.length)
 
     // Sort by stars and recent updates
     featuredProjects.sort((a, b) => {
@@ -227,52 +278,40 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
 }
 
 function extractFeaturedMetadata(readme: string) {
-  const match = readme.match(/<!-- PORTFOLIO-FEATURED([\s\S]*?)-->/i);
-  if (!match) return null;
-  const block = match[1];
-  const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-  const meta: Record<string, string> = {};
-  for (const line of lines) {
-    // Aceita "Campo: valor" com ou sem acento, com espaços, etc.
-    const matchLine = line.match(/^([\wÀ-ÿ\s]+):\s*(.+)$/i);
-    if (matchLine) {
-      let key = matchLine[1].trim().toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acento
-      const value = matchLine[2].trim();
-      switch (key) {
-        case 'titulo':
-        case 'title':
-          meta.title = value;
-          break;
-        case 'descricao':
-        case 'description':
-          meta.description = value;
-          break;
-        case 'tecnologias':
-        case 'technologies':
-          meta.technologies = value;
-          break;
-        case 'demo':
-          meta.demo = value;
-          break;
-        case 'destaque':
-        case 'highlight':
-          meta.highlight = value;
-          break;
-        case 'imagem':
-        case 'image':
-          meta.image = value;
-          break;
-        default:
-          meta[key] = value;
-      }
-    }
+  // Regex mais tolerante para capturar o bloco, aceitando qualquer coisa entre <!-- e PORTFOLIO-FEATURED
+  const blockRegex = /<!--[^\S\r\n]*PORTFOLIO-FEATURED([\s\S]*?)-->/im;
+  const match = readme.match(blockRegex);
+  console.log('[DEBUG][PORTFOLIO] Bloco capturado:', match ? match[1] : 'NADA ENCONTRADO');
+  if (!match) {
+    console.log('[DEBUG][PORTFOLIO] Nenhum bloco PORTFOLIO-FEATURED encontrado.');
+    return null;
   }
-  return meta;
+  const block = match[1];
+  // Regex para capturar chave: valor (aceita espaços, acentos, português/inglês)
+  const fieldRegex = /^\s*([\wÀ-ÿ\-]+)\s*:\s*(.+)$/gmi;
+  let fields: Record<string, string> = {};
+  let m;
+  while ((m = fieldRegex.exec(block)) !== null) {
+    let key = m[1].trim().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acentos
+    // Normaliza para inglês
+    if (key === 'titulo') key = 'title';
+    if (key === 'tecnologias') key = 'technologies';
+    if (key === 'destaque' || key === 'highlight') key = 'highlight';
+    if (key === 'imagem' || key === 'image') key = 'image';
+    if (key === 'demo') key = 'demo';
+    fields[key] = m[2].trim();
+  }
+  console.log('[DEBUG][PORTFOLIO] Campos extraídos:', fields);
+  return fields;
 }
 
 function parseFeaturedProject(repo: Repo): FeaturedProject | null {
-  if (!repo.readme_content) return null;
+  console.log('[DEBUG][PORTFOLIO] Chamando parseFeaturedProject para:', repo.name);
+  if (!repo.readme_content) {
+    console.log('[DEBUG][PORTFOLIO] Repo sem readme_content:', repo.name);
+    return null;
+  }
   console.log('[DEBUG][PORTFOLIO] Início do README:', repo.readme_content?.substring(0, 500));
   const meta = extractFeaturedMetadata(repo.readme_content);
   console.log('[DEBUG][PORTFOLIO] Metadados extraídos do README:', meta);
@@ -373,4 +412,11 @@ function getFallbackProjects(): FeaturedProject[] {
       updatedAt: new Date().toISOString()
     }
   ]
+} 
+
+// Limpar o cache dos projetos em destaque ao carregar a página
+if (typeof window !== 'undefined') {
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('featured-projects-')) localStorage.removeItem(k);
+  });
 } 
