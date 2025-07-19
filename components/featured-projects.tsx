@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { ExternalLink, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { badgeClass } from "@/components/ui/badge"
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 interface FeaturedProjectsProps {
   username: string
@@ -169,14 +170,23 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                 {project.description}
               </p>
 
-              {/* Fallback visual para README ausente */}
+              {/* Fallback visual para README ausente com tooltip animado */}
               {(!project.readmeContent || project.readmeContent.trim() === "") && (
-                <div className="flex items-center gap-2 mb-4 animate-pulse group/readme-fallback">
-                  <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <span className="text-yellow-300 text-xs md:text-sm" title="README.md não encontrado ou não pôde ser carregado. Adicione um README.md ao repositório para exibir detalhes completos.">
-                    README.md não encontrado ou não pôde ser carregado.
-                  </span>
-                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2 mb-4 animate-pulse group/readme-fallback cursor-help">
+                        <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span className="text-yellow-300 text-xs md:text-sm">
+                          README.md não encontrado ou não pôde ser carregado.
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="bg-zinc-900 text-yellow-200 border-yellow-400 animate-fade-in">
+                      Adicione um <b>README.md</b> ao repositório para exibir detalhes completos do projeto aqui.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
 
               {/* Tecnologias */}
