@@ -164,7 +164,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
                 {project.name}
               </h3>
-              <p className="text-zinc-400 text-base mb-4">
+              <p className="text-zinc-400 mb-4 text-justify">
                 {project.description}
               </p>
 

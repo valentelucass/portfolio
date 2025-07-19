@@ -58,7 +58,7 @@ export function Timeline() {
                 <div className="text-zinc-400 mb-4">
                   {experience.company} | {experience.period}
                 </div>
-                <p className="text-zinc-300">{experience.description}</p>
+                <p className="text-zinc-300 text-justify">{experience.description}</p>
               </div>
             </div>
           </motion.div>

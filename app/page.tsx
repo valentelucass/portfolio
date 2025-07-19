@@ -43,7 +43,7 @@ export default function Portfolio() {
                 Lucas Andrade
               </span>
             </h1>
-            <p className="text-xl text-zinc-400 max-w-[600px]">
+            <p className="text-xl text-zinc-400 max-w-[600px] text-justify">
             Explore meus projetos fullstack e minha jornada de aprendizado. Inovação e dedicação em cada linha de código.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
@@ -136,13 +136,13 @@ export default function Portfolio() {
 
             <div className="space-y-6">
               <GlassmorphicCard>
-                <p className="text-lg text-zinc-300">
+                <p className="text-lg text-zinc-300 text-justify">
                   Sou um desenvolvedor fullstack em formação, com foco em back-end, Java e banco de dados. Tenho paixão por criar aplicações web eficientes, estruturadas e preparadas para crescer com qualidade e performance.
                 </p>
-                <p className="text-lg text-zinc-300 mt-4">
+                <p className="text-lg text-zinc-300 mt-4 text-justify">
                   Minha trajetória na tecnologia vem sendo construída com base sólida em desenvolvimento de software e experiências práticas. Já desenvolvi plataformas como Home Service e Easy Rake, atuando em toda a estrutura de back-end, APIs e banco de dados com responsabilidade técnica e autonomia.
                 </p>
-                <p className="text-lg text-zinc-300 mt-4">
+                <p className="text-lg text-zinc-300 mt-4 text-justify">
                   Quando não estou codando, estou estudando novas arquiteturas, aprimorando minhas habilidades em Java e SQL, e explorando boas práticas que fortalecem a base de sistemas robustos e escaláveis.
                 </p>
 
@@ -153,7 +153,7 @@ export default function Portfolio() {
                   </div>
                   <div className="space-y-1">
                     <div className="text-sm text-zinc-500">Email</div>
-                    <div className="font-medium">lucasmac.dev@gmail.com</div>
+                    <div className="font-medium break-all">lucasmac.dev@gmail.com</div>
                   </div>
                   <div className="space-y-1">
                     <div className="text-sm text-zinc-500">Localização</div>
