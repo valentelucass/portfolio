@@ -6,6 +6,7 @@ import { FeaturedProject } from '@/types/github'
 import { motion } from 'framer-motion'
 import { ExternalLink, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { badgeClass } from "@/components/ui/badge"
 
 interface FeaturedProjectsProps {
   username: string
@@ -115,8 +116,8 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
         
         <div className="text-center py-12">
-          <p className="text-gray-400 mb-4">Nenhum projeto em destaque encontrado.</p>
-          <p className="text-gray-500 text-sm">
+          <p className="text-muted-foreground mb-4">Nenhum projeto em destaque encontrado.</p>
+          <p className="text-muted-foreground text-sm">
             Adicione <code className="bg-gray-800 px-2 py-1 rounded">{"<!-- PORTFOLIO-FEATURED -->"}</code> no README dos seus projetos para destacá-los aqui.
           </p>
         </div>
@@ -164,16 +165,14 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
               <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
                 {project.name}
               </h3>
-              <p className="text-zinc-400 mb-4 text-justify">
-                {project.description}
-              </p>
+              <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify">{project.description}</p>
 
               {/* Tecnologias */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {project.technologies?.map((tech, techIndex) => (
                   <span
                     key={techIndex}
-                    className="px-2 py-1 text-xs bg-zinc-700/50 text-zinc-300 rounded-full"
+                    className={badgeClass}
                   >
                     {tech}
                   </span>
@@ -198,6 +197,17 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                     variant="outline"
                     className="flex-1 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
                     onClick={() => window.open(project.githubUrl, '_blank')}
+                  >
+                    <Github className="w-4 h-4 mr-2" />
+                    Código
+                  </Button>
+                )}
+                {!project.githubUrl && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:bg-zinc-700 disabled:text-zinc-400 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-zinc-800 hover:text-accent-foreground h-9 rounded-md px-3 flex-1 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
+                    disabled
                   >
                     <Github className="w-4 h-4 mr-2" />
                     Código

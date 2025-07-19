@@ -32,7 +32,7 @@ export function SkillBadge({ name, level }: SkillBadgeProps) {
             />
           </div>
 
-          <div className="mt-2 text-right text-sm text-zinc-400">{level}%</div>
+          <div className="mt-2 text-right text-sm text-muted-foreground">{level}%</div>
         </div>
       </div>
     </motion.div>

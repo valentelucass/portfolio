@@ -55,12 +55,12 @@ export function FloatingNav() {
             <div className="relative flex items-center justify-between">
               <Link href="/" className="font-bold text-lg">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
-                <span className="text-white">Andrade</span>
+                <span className="text-foreground">Andrade</span>
               </Link>
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-zinc-400 hover:text-white hover:bg-zinc-700/50"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 onClick={() => setIsOpen(!isOpen)}
               >
                 {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -70,24 +70,18 @@ export function FloatingNav() {
             <div className="relative flex items-center gap-1">
               <Link href="/" className="font-bold text-lg mr-4">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
-                <span className="text-white">Andrade</span>
+                <span className="text-foreground">Andrade</span>
               </Link>
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="px-3 py-1 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+                  className="px-3 py-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   onClick={handleNavClick}
                 >
                   {item.name}
                 </Link>
               ))}
-              <Button
-                size="sm"
-                className="ml-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 border-0"
-              >
-                Resume
-              </Button>
             </div>
           )}
         </div>
@@ -106,15 +100,13 @@ export function FloatingNav() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="px-8 py-4 text-2xl font-medium text-white hover:text-cyan-400 transition-colors"
+                className="px-8 py-4 text-2xl font-medium text-foreground hover:text-cyan-400 transition-colors"
                 onClick={handleNavClick}
               >
                 {item.name}
               </Link>
             ))}
-            <Button className="mt-6 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 border-0">
-              Resume
-            </Button>
+            {/* Botão Resume removido da versão mobile */}
           </div>
         </motion.div>
       )}

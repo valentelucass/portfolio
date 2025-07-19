@@ -121,13 +121,25 @@ export default function GitHubSkills({ username, fallbackSkills = [] }: GitHubSk
                   style={{ width: `${skill.percentage}%` }}
                 />
               </div>
-              <div className="text-right text-sm text-zinc-300 z-10 relative">{skill.percentage}%</div>
+              <div className="text-right text-sm info-custom-color z-10 relative">{skill.percentage}%</div>
             </motion.div>
           ))}
         </div>
       </div>
     )
   }
+
+  // Array de cores para as barras
+  const barColors = [
+    "bg-cyan-500",
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-yellow-500",
+    "bg-red-500",
+    "bg-orange-500",
+  ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-16">
@@ -144,11 +156,11 @@ export default function GitHubSkills({ username, fallbackSkills = [] }: GitHubSk
           <div className="font-bold text-lg text-white z-10 relative">{skill.name}</div>
           <div className="w-full h-2.5 bg-zinc-700 rounded-full overflow-hidden mb-2 z-10 relative">
             <div
-              className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-700"
+              className={`h-full transition-all duration-700 ${barColors[index % barColors.length]}`}
               style={{ width: `${skill.percentage}%` }}
             />
           </div>
-          <div className="text-right text-sm text-zinc-300 z-10 relative">{skill.percentage}%</div>
+          <div className="text-right text-sm info-custom-color z-10 relative">{skill.percentage}%</div>
         </motion.div>
       ))}
     </div>

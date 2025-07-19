@@ -114,3 +114,13 @@
 button:disabled, button[disabled], [aria-disabled='true'] {
   color: #111 !important;
 }
+
+/* Cor exclusiva para o texto do botão */
+.btn-custom-color {
+  color: #fff; /* branco, pode trocar para outra cor se quiser */
+}
+
+/* Cor exclusiva para o texto informativo */
+.info-custom-color {
+  color: #D4D4D8; /* cinza claro, pode trocar para outra cor se quiser */
+}

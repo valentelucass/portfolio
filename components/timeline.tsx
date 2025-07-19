@@ -55,10 +55,10 @@ export function Timeline() {
 
               <div className="relative">
                 <h3 className="text-xl font-bold">{experience.title}</h3>
-                <div className="text-zinc-400 mb-4">
+                <div className="text-muted-foreground mb-4">
                   {experience.company} | {experience.period}
                 </div>
-                <p className="text-zinc-300 text-justify">{experience.description}</p>
+                <p className="text-sm md:text-base text-muted-foreground text-justify">{experience.description}</p>
               </div>
             </div>
           </motion.div>
