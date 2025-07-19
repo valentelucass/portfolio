@@ -138,9 +138,9 @@ export default function Portfolio() {
 
             <div className="space-y-6">
               <GlassmorphicCard>
-                <p className="text-sm md:text-base text-muted-foreground text-justify">
-                  Sou um desenvolvedor fullstack em formação, com foco em back-end, Java e banco de dados. Tenho paixão por criar aplicações web eficientes, estruturadas e preparadas para crescer com qualidade e performance.
-                </p>
+                            <p className="text-sm md:text-base text-muted-foreground text-justify">
+              Sou um desenvolvedor fullstack em formação, com foco em back-end, Java e banco de dados. Tenho paixão por criar aplicações web eficientes, estruturadas e preparadas para crescer com qualidade e performance.
+            </p>
                 <p className="text-sm md:text-base text-muted-foreground mt-4 text-justify">
                   Minha trajetória na tecnologia vem sendo construída com base sólida em desenvolvimento de software e experiências práticas. Já desenvolvi plataformas como Home Service e Easy Rake, atuando em toda a estrutura de back-end, APIs e banco de dados com responsabilidade técnica e autonomia.
                 </p>
@@ -171,7 +171,7 @@ export default function Portfolio() {
                   <a
                     href="/curriculo-lucas.pdf"
                     download
-                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:text-zinc-700 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2"
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:text-zinc-700 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 btn-custom-color bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 border-0 h-10 px-4 py-2"
                   >
                     Download Currículo
                     </a>
@@ -299,7 +299,7 @@ export default function Portfolio() {
           <div>
             <Link href="/" className="font-bold text-xl">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
-              <span className="text-foreground">Andrade</span>
+              <span className="text-foreground name-andrade">Andrade</span>
             </Link>
             <p className="text-sm text-muted-foreground mt-2">
               © {new Date().getFullYear()} Lucas Andrade. Todos os direitos reservados.

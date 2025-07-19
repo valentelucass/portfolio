@@ -14,7 +14,7 @@ export function useFeaturedProjects(username: string) {
       setLoading(true);
       console.log('🔍 Buscando projetos em destaque...');
       
-      const projects = await getFeaturedProjects();
+      const projects = await getFeaturedProjects(username);
       console.log('📋 Projetos encontrados:', projects);
       
       setProjects(projects);

@@ -28,3 +28,6 @@ next-env.d.ts
 
 # pastas zip backup
 /versões_anteriores
+
+# pasta de diagnósticos para o sistema
+/diagnostics

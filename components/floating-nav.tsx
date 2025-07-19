@@ -55,7 +55,7 @@ export function FloatingNav() {
             <div className="relative flex items-center justify-between">
               <Link href="/" className="font-bold text-lg">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
-                <span className="text-foreground">Andrade</span>
+                <span className="text-foreground name-andrade">Andrade</span>
               </Link>
               <Button
                 variant="ghost"
@@ -70,7 +70,7 @@ export function FloatingNav() {
             <div className="relative flex items-center gap-1">
               <Link href="/" className="font-bold text-lg mr-4">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
-                <span className="text-foreground">Andrade</span>
+                <span className="text-foreground name-andrade">Andrade</span>
               </Link>
               {navItems.map((item) => (
                 <Link

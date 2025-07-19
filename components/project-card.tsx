@@ -51,7 +51,7 @@ export function ProjectCard({ title, description, tags, image, demoUrl, repoUrl 
 
             <div className="flex flex-wrap gap-2 mb-6">
               {tags.map((tag, index) => (
-                <Badge key={index} variant="secondary">
+                <Badge key={index} variant="inverted">
                   {tag}
                 </Badge>
               ))}

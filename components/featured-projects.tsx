@@ -6,7 +6,7 @@ import { FeaturedProject } from '@/types/github'
 import { motion } from 'framer-motion'
 import { ExternalLink, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { badgeClass } from "@/components/ui/badge"
+import { badgeClass, badgeClassInverted } from "@/components/ui/badge"
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 interface FeaturedProjectsProps {
@@ -67,7 +67,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
 
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-8">
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
         
         <div className="text-center">
@@ -90,7 +90,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
 
   if (error) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-8">
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
         
         <div className="bg-red-900/20 border border-red-500/20 rounded-lg p-4">
@@ -113,7 +113,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
 
   if (projects.length === 0) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-8">
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
         
         <div className="text-center py-12">
@@ -137,7 +137,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -194,7 +194,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                 {project.technologies?.map((tech, techIndex) => (
                   <span
                     key={techIndex}
-                    className={badgeClass}
+                    className={badgeClassInverted}
                   >
                     {tech}
                   </span>
@@ -217,7 +217,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
+                    className="flex-1 border-zinc-600 text-zinc-300 btn-text hover:bg-zinc-700"
                     onClick={() => window.open(project.githubUrl, '_blank')}
                   >
                     <Github className="w-4 h-4 mr-2" />

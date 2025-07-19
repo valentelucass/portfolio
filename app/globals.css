@@ -115,6 +115,59 @@ button:disabled, button[disabled], [aria-disabled='true'] {
   color: #111 !important;
 }
 
+/* ========================================
+   CORREÇÕES PARA PROBLEMAS DE CORES
+   ======================================== */
+
+/* Classes específicas para elementos problemáticos */
+.name-andrade {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+/* Classe específica para o texto sobre empreendedor digital */
+.empreendedor-text {
+  color: rgb(161 161 170) !important;
+  transition: color 0.3s ease;
+}
+
+/* Classe específica para o texto da empresa e período */
+.company-period-text {
+  color: rgb(113 113 122) !important;
+  transition: color 0.3s ease;
+}
+
+.btn-text {
+  color: hsl(var(--accent-foreground)) !important;
+  transition: color 0.3s ease;
+}
+
+/* Fallbacks para casos de falha das variáveis CSS */
+.text-foreground {
+  color: hsl(var(--foreground), #000000);
+  transition: color 0.3s ease;
+}
+
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground), #6b7280);
+  transition: color 0.3s ease;
+}
+
+/* Prevenir mudanças inesperadas */
+.text-foreground,
+.text-muted-foreground,
+.text-zinc-300 {
+  transition: color 0.3s ease !important;
+}
+
+/* Garantir que as cores sejam aplicadas imediatamente */
+body {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
 /* Cor exclusiva para o texto do botão */
 .btn-custom-color {
   color: #fff; /* branco, pode trocar para outra cor se quiser */

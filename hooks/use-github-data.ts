@@ -5,11 +5,11 @@ import { fetchGithubSkills } from "../lib/github";
 import type { Skill } from "../types/github";
 
 const fallbackSkills: Skill[] = [
-  { name: "Java", percent: 45 },
-  { name: "MySQL", percent: 25 },
-  { name: "CSS", percent: 15 },
-  { name: "HTML", percent: 10 },
-  { name: "JavaScript", percent: 5 },
+  { name: "Java", percentage: 45, color: "#ed8b00" },
+  { name: "MySQL", percentage: 25, color: "#336791" },
+  { name: "CSS", percentage: 15, color: "#1572b6" },
+  { name: "HTML", percentage: 10, color: "#e34f26" },
+  { name: "JavaScript", percentage: 5, color: "#f7df1e" },
 ];
 
 export function useGithubData(username: string) {

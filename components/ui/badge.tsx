@@ -12,6 +12,8 @@ const badgeVariants = cva(
           "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
         secondary:
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        inverted:
+          "border-transparent bg-secondary-foreground text-secondary hover:bg-secondary-foreground/80",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
@@ -35,4 +37,6 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 
 const badgeClass = "inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
 
-export { Badge, badgeVariants, badgeClass }
+const badgeClassInverted = "inline-flex items-center rounded-full border border-transparent bg-secondary-foreground text-secondary px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2";
+
+export { Badge, badgeVariants, badgeClass, badgeClassInverted }
