@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight, Github, Linkedin } from "lucide-react"
 
@@ -13,6 +15,17 @@ import { SectionHeading } from "@/components/section-heading"
 import { GlassmorphicCard } from "@/components/glassmorphic-card"
 import GitHubSkills from "@/components/github-skills"
 import FeaturedProjects from "@/components/featured-projects"
+
+// Função para scroll suave até uma seção
+const scrollToSection = (sectionId: string) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+};
 
 export default function Portfolio() {
   return (
@@ -47,7 +60,11 @@ export default function Portfolio() {
             Explore meus projetos fullstack e minha jornada de aprendizado. Inovação e dedicação em cada linha de código.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <Button variant="default" className="relative overflow-hidden group btn-custom-color bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-cyan-500 hover:to-blue-500">
+              <Button 
+                variant="default" 
+                className="relative overflow-hidden group btn-custom-color bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-cyan-500 hover:to-blue-500"
+                onClick={() => scrollToSection('projects')}
+              >
                 <span className="relative z-10 flex items-center">
                   Visualizar Projetos<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </span>
@@ -56,6 +73,7 @@ export default function Portfolio() {
               <Button
                 variant="outline"
                 className="border-slate-700 text-cyan-500 hover:text-cyan-400 hover:border-slate-500 bg-transparent"
+                onClick={() => window.open('https://wa.me/5584994187843', '_blank')}
               >
                 Contate-me
               </Button>

@@ -1,0 +1,242 @@
+/* ========================================
+   CLASSES DE COMPONENTES
+   ======================================== */
+
+/* ========================================
+   CLASSES ESPECÍFICAS DE TEXTO
+   ======================================== */
+
+/* Nome "Andrade" */
+.name-andrade {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+/* Texto sobre empreendedor digital */
+.empreendedor-text {
+  color: rgb(161 161 170) !important;
+  transition: color 0.3s ease;
+}
+
+/* Texto da empresa e período */
+.company-period-text {
+  color: rgb(113 113 122) !important;
+  transition: color 0.3s ease;
+}
+
+/* Texto de botões */
+.btn-text {
+  color: hsl(var(--accent-foreground)) !important;
+  transition: color 0.3s ease;
+}
+
+/* Cores customizadas */
+.btn-custom-color {
+  color: #fff; /* branco */
+}
+
+.info-custom-color {
+  color: #D4D4D8; /* cinza claro */
+}
+
+/* ========================================
+   FALLBACKS E CORREÇÕES
+   ======================================== */
+
+/* Fallbacks para casos de falha das variáveis CSS */
+.text-foreground {
+  color: hsl(var(--foreground), #000000);
+  transition: color 0.3s ease;
+}
+
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground), #6b7280);
+  transition: color 0.3s ease;
+}
+
+/* Prevenir mudanças inesperadas */
+.text-foreground,
+.text-muted-foreground,
+.text-zinc-300 {
+  transition: color 0.3s ease !important;
+}
+
+/* Garantir que as cores sejam aplicadas imediatamente */
+body {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+/* ========================================
+   CORREÇÕES ESPECÍFICAS
+   ======================================== */
+
+/* Correção para botões desabilitados */
+button:disabled, 
+button[disabled], 
+[aria-disabled='true'] {
+  color: #111 !important;
+}
+
+/* ========================================
+   COMPONENTES ESPECÍFICOS
+   ======================================== */
+
+/* Cards de Projeto */
+.project-card {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: hsl(var(--zinc-800), 0.5);
+  backdrop-filter: blur(0.5rem);
+  border: 1px solid hsl(var(--zinc-700), 0.5);
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  border-color: hsl(var(--cyan-500), 0.5);
+}
+
+.project-card-image {
+  position: relative;
+  overflow: hidden;
+  height: 12rem;
+}
+
+.project-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, hsl(var(--cyan-500), 0.2), hsl(var(--blue-500), 0.2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.project-card:hover .project-card-overlay {
+  opacity: 1;
+}
+
+/* Cards de Skills */
+.skill-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: hsl(var(--zinc-800), 0.5);
+  backdrop-filter: blur(0.5rem);
+  border: 1px solid hsl(var(--zinc-700), 0.5);
+  padding: 1.5rem;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.skill-card:hover {
+  border-color: hsl(var(--cyan-500), 0.5);
+}
+
+.skill-progress-bar {
+  position: relative;
+  height: 0.625rem; /* 2.5/4 */
+  width: 100%;
+  background-color: hsl(var(--zinc-700));
+  border-radius: 0.5rem; /* 2/4 */
+  overflow: hidden;
+}
+
+.skill-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(to right, hsl(var(--cyan-500)), hsl(var(--blue-500)));
+  border-radius: 0.5rem; /* 2/4 */
+}
+
+/* Timeline */
+.timeline-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: hsl(var(--zinc-800), 0.5);
+  backdrop-filter: blur(0.5rem);
+  border: 1px solid hsl(var(--zinc-700), 0.5);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.timeline-item:hover {
+  border-color: hsl(var(--cyan-500), 0.5);
+}
+
+.timeline-dot {
+  position: absolute;
+  width: 1.5rem; /* 6/4 */
+  height: 1.5rem; /* 6/4 */
+  border-radius: 50%;
+  background: linear-gradient(to right, hsl(var(--cyan-500)), hsl(var(--blue-500)));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.timeline-dot-inner {
+  width: 0.5rem; /* 2/4 */
+  height: 0.5rem; /* 2/4 */
+  border-radius: 50%;
+  background-color: hsl(var(--white));
+}
+
+/* ========================================
+   UTILITÁRIOS DE COMPONENTES
+   ======================================== */
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-0.25rem); /* -translate-y-1 */
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05); /* hover:scale-105 */
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 1.5rem hsl(var(--cyan-500), 0.25); /* hover:shadow-lg hover:shadow-cyan-500/25 */
+}
+
+/* Focus states */
+.focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--ring)), 0 0 0 4px hsl(var(--ring));
+}
+
+/* Responsive utilities */
+.responsive-text {
+  font-size: 0.875rem; /* text-sm */
+}
+
+.responsive-text.md {
+  font-size: 1rem; /* md:text-base */
+}
+
+.responsive-heading {
+  font-size: 2.5rem; /* text-4xl */
+}
+
+.responsive-heading.md {
+  font-size: 3.125rem; /* md:text-5xl */
+} 

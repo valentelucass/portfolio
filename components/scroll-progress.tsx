@@ -22,10 +22,14 @@ export function ScrollProgress() {
   }, [])
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 origin-left z-50"
-      style={{ scaleX, opacity: isVisible ? 1 : 0 }}
-      transition={{ opacity: { duration: 0.3 } }}
-    />
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center">
+      <div className="container px-8">
+        <motion.div
+          className="h-1 bg-gradient-to-r from-cyan-500 to-blue-500 origin-left rounded-full"
+          style={{ scaleX, opacity: isVisible ? 1 : 0 }}
+          transition={{ opacity: { duration: 0.3 } }}
+        />
+      </div>
+    </div>
   )
 }

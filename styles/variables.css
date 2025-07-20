@@ -1,0 +1,75 @@
+/* ========================================
+   VARIÁVEIS CSS ORGANIZADAS
+   ======================================== */
+
+/* 
+  NOTA: As variáveis CSS foram movidas para o arquivo principal
+  app/globals.css dentro do @layer base para compatibilidade
+  com o Tailwind CSS.
+  
+  Este arquivo foi mantido para documentação e referência.
+  Todas as variáveis estão agora em app/globals.css.
+*/
+
+/* ========================================
+   REFERÊNCIA DAS VARIÁVEIS
+   ======================================== */
+
+/*
+  Variáveis disponíveis no app/globals.css:
+  
+  CORES PRINCIPAIS:
+  - --background: 0 0% 100%
+  - --foreground: 210 40% 8%
+  
+  CORES DE CARDS E POPOVERS:
+  - --card: 0 0% 100%
+  - --card-foreground: 210 40% 8%
+  - --popover: 0 0% 100%
+  - --popover-foreground: 210 40% 8%
+  
+  CORES PRIMÁRIAS E SECUNDÁRIAS:
+  - --primary: 210 40% 8%
+  - --primary-foreground: 0 0% 98%
+  - --secondary: 210 40% 96%
+  - --secondary-foreground: 210 40% 8%
+  
+  CORES MUTED E ACCENT:
+  - --muted: 210 40% 96%
+  - --muted-foreground: 215 16% 47%
+  - --accent: 210 40% 96%
+  - --accent-foreground: 210 40% 8%
+  
+  CORES DE ESTADO:
+  - --destructive: 0 84.2% 60.2%
+  - --destructive-foreground: 0 0% 98%
+  
+  CORES DE BORDAS E INPUTS:
+  - --border: 214 32% 91%
+  - --input: 214 32% 91%
+  - --ring: 210 40% 8%
+  
+  CORES DE GRÁFICOS:
+  - --chart-1: 200 100% 50%
+  - --chart-2: 195 100% 45%
+  - --chart-3: 210 100% 40%
+  - --chart-4: 185 100% 55%
+  - --chart-5: 220 100% 60%
+  
+  CONFIGURAÇÕES GERAIS:
+  - --radius: 0.5rem
+  
+  CORES DE SIDEBAR:
+  - --sidebar-background: 210 40% 98%
+  - --sidebar-foreground: 210 40% 15%
+  - --sidebar-primary: 210 40% 8%
+  - --sidebar-primary-foreground: 0 0% 98%
+  - --sidebar-accent: 210 40% 96%
+  - --sidebar-accent-foreground: 210 40% 8%
+  - --sidebar-border: 214 32% 91%
+  - --sidebar-ring: 200 100% 50%
+  
+  TEMA ESCURO (.dark):
+  Todas as variáveis acima têm versões para tema escuro
+  definidas no seletor .dark no app/globals.css
+*/ 

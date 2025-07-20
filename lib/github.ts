@@ -1,6 +1,7 @@
 "use client"
 
 import { Repo, Skill, FeaturedProject } from '../types/github'
+import { logger } from './logger'
 
 const CACHE_KEY = "github_skills_cache";
 const CACHE_TIME = 60 * 60 * 1000; // 1 hora
@@ -14,7 +15,7 @@ export async function fetchGithubSkills(username: string): Promise<Skill[]> {
       try {
         const { data, timestamp } = JSON.parse(cached);
         if (Date.now() - timestamp < CACHE_TIME) {
-          console.log("Usando cache das skills do GitHub");
+          logger.info("Usando cache das skills do GitHub");
           return data;
         }
       } catch (error) {
@@ -25,35 +26,28 @@ export async function fetchGithubSkills(username: string): Promise<Skill[]> {
   }
 
   try {
-    console.log("Buscando skills do GitHub para:", username);
+    logger.info("Buscando skills do GitHub para:", { username });
     
     // Busca repositórios com autenticação
     const headers = getAuthHeaders();
     const reposUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
-    console.log('[DEBUG] Fetching repos for skills from:', reposUrl);
     const reposRes = await fetch(reposUrl, { headers });
-    console.log('[DEBUG] Status da resposta skills:', reposRes.status);
-    const reposText = await reposRes.text();
-    console.log('[DEBUG] Corpo da resposta skills:', reposText);
     if (!reposRes.ok) {
-      throw new Error(`Erro ao buscar repositórios: ${reposRes.status} | Body: ${reposText}`);
+      throw new Error(`Erro ao buscar repositórios: ${reposRes.status} | Body: ${await reposRes.text()}`);
     }
-    const repos: Repo[] = JSON.parse(reposText);
+    const repos: Repo[] = JSON.parse(await reposRes.text());
 
     // Busca linguagens de cada repo
     const langStats: Record<string, number> = {};
     for (const repo of repos) {
       try {
-        console.log('[DEBUG] Fetching languages for:', repo.name);
         const langRes = await fetch(repo.languages_url, { headers });
-        console.log('[DEBUG] Status da resposta languages:', langRes.status);
         if (!langRes.ok) continue;
         const langs = await langRes.json();
         for (const [lang, bytes] of Object.entries(langs)) {
           langStats[lang] = (langStats[lang] || 0) + (bytes as number);
         }
       } catch (error) {
-        console.log('[DEBUG] Erro ao buscar languages para:', repo.name, error);
         // Continua para o próximo repo se houver erro
         continue;
       }
@@ -73,13 +67,13 @@ export async function fetchGithubSkills(username: string): Promise<Skill[]> {
       }))
       .sort((a, b) => b.percentage - a.percentage);
 
-    console.log("Skills encontradas:", skills);
+    logger.info("Skills encontradas", { count: skills.length });
 
     // Salva cache apenas se localStorage estiver disponível
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify({ data: skills, timestamp: Date.now() }));
-        console.log("Cache das skills salvo");
+        logger.info("Cache das skills salvo");
       } catch (error) {
         // Ignora erro de localStorage
       }
@@ -87,7 +81,7 @@ export async function fetchGithubSkills(username: string): Promise<Skill[]> {
 
     return skills;
   } catch (error) {
-    console.error("Erro ao buscar skills do GitHub:", error);
+    logger.error("Erro ao buscar skills do GitHub", error);
     throw error;
   }
 }
@@ -119,60 +113,44 @@ function getSkillColor(skillName: string): string {
   return colors[skillName] || '#6b7280';
 }
 
-const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-console.log('[DEBUG] NEXT_PUBLIC_GITHUB_TOKEN:', GITHUB_TOKEN);
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Removido NEXT_PUBLIC_ para segurança
 
 function getAuthHeaders(): Record<string, string> {
   if (GITHUB_TOKEN) {
     const headers = { Authorization: `token ${GITHUB_TOKEN}` };
-    console.log('[DEBUG] Headers usados no fetch:', headers);
     return headers;
   }
-  console.log('[DEBUG] Headers usados no fetch: {}');
   return {};
 }
 
 async function fetchUserRepos(username: string): Promise<Repo[]> {
   const url = `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`;
   const headers = getAuthHeaders();
-  console.log('[DEBUG] Fetching repos from:', url);
   const reposRes = await fetch(url, { headers });
-  console.log('[DEBUG] Status da resposta:', reposRes.status);
-  const text = await reposRes.text();
-  console.log('[DEBUG] Corpo da resposta:', text);
   if (!reposRes.ok) {
-    throw new Error(`Erro ao buscar repositórios: ${reposRes.status} | Body: ${text}`);
+    throw new Error(`Erro ao buscar repositórios: ${reposRes.status} | Body: ${await reposRes.text()}`);
   }
-  const repos: Repo[] = JSON.parse(text);
+  const repos: Repo[] = JSON.parse(await reposRes.text());
   for (const repo of repos) {
     try {
       const readmeUrl = `https://api.github.com/repos/${username}/${repo.name}/readme`;
-      console.log('[DEBUG] Fetching README from:', readmeUrl);
       const readmeRes = await fetch(readmeUrl, { headers });
-      console.log('[DEBUG] Status da resposta README:', readmeRes.status);
       if (readmeRes.status === 404) {
         repo.readme_content = '';
         repo.readme_error = 'README não encontrado (404).';
-        console.log(`[DIAGNOSTIC] README.md não encontrado para ${repo.name}`);
-        console.log(`[LOG][READMEBUSCA] 404 para ${repo.name} | URL: ${readmeUrl}`);
         continue;
       }
       const readmeText = await readmeRes.text();
       if (readmeRes.ok) {
         const readmeData = JSON.parse(readmeText);
         repo.readme_content = atob(readmeData.content);
-        console.log(`[LOG][READMEBUSCA] README.md carregado para ${repo.name}`);
       } else {
         repo.readme_content = '';
         repo.readme_error = 'README não disponível ou não encontrado.';
-        console.log(`[DIAGNOSTIC] Erro ao buscar README.md para ${repo.name}: status ${readmeRes.status}`);
-        console.log(`[LOG][READMEBUSCA] Erro ao buscar README.md para ${repo.name} | Status: ${readmeRes.status} | URL: ${readmeUrl}`);
       }
     } catch (error) {
-      console.log('[DEBUG] Erro ao buscar README:', error);
       repo.readme_content = '';
       repo.readme_error = 'README não disponível ou erro ao buscar.';
-      console.log(`[LOG][READMEBUSCA] Exceção ao buscar README.md para ${repo.name} | Erro: ${error}`);
     }
   }
   return repos;
@@ -180,78 +158,18 @@ async function fetchUserRepos(username: string): Promise<Repo[]> {
 
 // Nova função para buscar apenas repositórios estrelados pelo usuário
 async function fetchStarredRepos(username: string): Promise<Repo[]> {
+  // Se estiver no client, buscar da API interna
+  if (typeof window !== 'undefined') {
+    const res = await fetch('/api/github/starred');
+    if (!res.ok) throw new Error('Erro ao buscar repositórios estrelados (API interna): ' + res.status);
+    return await res.json();
+  }
+  // Se estiver no server, buscar direto do GitHub (com token)
   const url = `https://api.github.com/users/${username}/starred?per_page=100`;
   const headers = getAuthHeaders();
-  console.log('[DEBUG] Fetching starred repos from:', url);
   const reposRes = await fetch(url, { headers });
-  console.log('[DEBUG] Status da resposta (starred):', reposRes.status);
-  const text = await reposRes.text();
-  console.log('[DEBUG] Corpo da resposta (starred):', text);
-  if (!reposRes.ok) {
-    throw new Error(`Erro ao buscar repositórios estrelados: ${reposRes.status} | Body: ${text}`);
-  }
-  const repos: Repo[] = JSON.parse(text);
-  
-  console.log(`[INFO] Encontrados ${repos.length} repositórios estrelados`);
-  
-  for (const repo of repos) {
-    try {
-      const readmeUrl = `https://api.github.com/repos/${repo.owner.login}/${repo.name}/readme`;
-      console.log(`[DEBUG] Buscando README para: ${repo.owner.login}/${repo.name}`);
-      console.log('[DEBUG] URL do README:', readmeUrl);
-      
-      const readmeRes = await fetch(readmeUrl, { headers });
-      console.log(`[DEBUG] Status da resposta README para ${repo.name}:`, readmeRes.status);
-      
-      if (readmeRes.status === 404) {
-        repo.readme_content = '';
-        repo.readme_error = 'README não encontrado (404).';
-        console.log(`[INFO] README.md não encontrado para ${repo.name} - isso é normal para alguns repositórios`);
-        console.log(`[LOG][READMEBUSCA] 404 para ${repo.name} | URL: ${readmeUrl}`);
-        continue;
-      }
-      
-      if (readmeRes.status === 403) {
-        repo.readme_content = '';
-        repo.readme_error = 'Acesso negado ao README (403).';
-        console.log(`[WARN] Acesso negado ao README.md para ${repo.name} - repositório pode ser privado`);
-        console.log(`[LOG][READMEBUSCA] 403 para ${repo.name} | URL: ${readmeUrl}`);
-        continue;
-      }
-      
-      const readmeText = await readmeRes.text();
-      if (readmeRes.ok) {
-        try {
-          const readmeData = JSON.parse(readmeText);
-          repo.readme_content = decodeURIComponent(escape(atob(readmeData.content)));
-          console.log(`[SUCCESS] README.md carregado com sucesso para ${repo.name}`);
-          console.log(`[LOG][READMEBUSCA] README.md carregado para ${repo.name} | Tamanho: ${repo.readme_content.length} chars`);
-        } catch (parseError) {
-          console.log(`[ERROR] Erro ao fazer parse do README para ${repo.name}:`, parseError);
-          repo.readme_content = '';
-          repo.readme_error = 'Erro ao processar conteúdo do README.';
-          console.log(`[LOG][READMEBUSCA] Erro de parse para ${repo.name} | Erro: ${parseError}`);
-        }
-      } else {
-        repo.readme_content = '';
-        repo.readme_error = `README não disponível (status: ${readmeRes.status}).`;
-        console.log(`[ERROR] Erro ao buscar README.md para ${repo.name}: status ${readmeRes.status}`);
-        console.log(`[LOG][READMEBUSCA] Erro ao buscar README.md para ${repo.name} | Status: ${readmeRes.status} | URL: ${readmeUrl}`);
-      }
-    } catch (error) {
-      console.log(`[ERROR] Exceção ao buscar README para ${repo.name}:`, error);
-      repo.readme_content = '';
-      repo.readme_error = 'Erro de rede ou conexão ao buscar README.';
-      console.log(`[LOG][READMEBUSCA] Exceção ao buscar README.md para ${repo.name} | Erro: ${error}`);
-    }
-  }
-  
-  // Log resumo final
-  const reposComReadme = repos.filter(r => r.readme_content && r.readme_content.length > 0).length;
-  const reposSemReadme = repos.filter(r => !r.readme_content || r.readme_content.length === 0).length;
-  console.log(`[SUMMARY] Resumo dos READMEs: ${reposComReadme} com README, ${reposSemReadme} sem README`);
-  
-  return repos;
+  if (!reposRes.ok) throw new Error('Erro ao buscar repositórios estrelados: ' + reposRes.status);
+  return await reposRes.json();
 }
 
 // Alterar getFeaturedProjects para usar fetchStarredRepos
@@ -266,40 +184,27 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
   if (cached) {
     const { data, timestamp } = JSON.parse(cached)
     if (Date.now() - timestamp < 3600000) { // 1 hour cache
-      console.log('Using cached featured projects')
       return data
     }
   }
 
   try {
-    console.log('Fetching featured projects for:', username)
     // Buscar apenas repositórios estrelados
     const repos = await fetchStarredRepos(username)
-    console.log('Total starred repos found:', repos.length)
     
     const featuredProjects: FeaturedProject[] = []
     const reposComReadme = repos.filter(r => r.readme_content && r.readme_content.length > 0)
     const reposSemReadme = repos.filter(r => !r.readme_content || r.readme_content.length === 0)
 
-    console.log(`[INFO] Processando ${reposComReadme.length} repositórios com README`)
-    console.log(`[INFO] Ignorando ${reposSemReadme.length} repositórios sem README`)
-
     for (const repo of reposComReadme) {
-      console.log(`[DEBUG][PORTFOLIO] Processando repositório: ${repo.name}`);
-      console.log(`[DEBUG][PORTFOLIO] README disponível: ${repo.readme_content ? 'Sim' : 'Não'}`);
       
       if (!repo.readme_content) {
-        console.log(`[DEBUG][PORTFOLIO] Repo sem readme_content: ${repo.name}`);
         continue;
       }
       
-      console.log(`[DEBUG][PORTFOLIO] Início do README para ${repo.name}:`, repo.readme_content?.substring(0, 200) + '...');
-      
       const meta = extractFeaturedMetadata(repo.readme_content);
-      console.log(`[DEBUG][PORTFOLIO] Metadados extraídos do README para ${repo.name}:`, meta);
       
       if (!meta) {
-        console.log(`[INFO] Nenhum bloco PORTFOLIO-FEATURED encontrado em ${repo.name} - ignorando`);
         continue;
       }
       
@@ -318,17 +223,8 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
         readmeContent: repo.readme_content,
       };
       
-      console.log(`[SUCCESS] Projeto em destaque criado para ${repo.name}:`, {
-        name: project.name,
-        technologies: project.technologies,
-        hasDemo: !!project.demoUrl,
-        hasImage: !!project.imageUrl
-      });
-      
       featuredProjects.push(project);
     }
-
-    console.log(`[SUMMARY] Total de projetos em destaque encontrados: ${featuredProjects.length}`);
 
     // Sort by stars and recent updates
     featuredProjects.sort((a, b) => {
@@ -342,7 +238,6 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
       timestamp: Date.now()
     }))
 
-    console.log(`[SUCCESS] ${featuredProjects.length} projetos em destaque salvos no cache`);
     return featuredProjects
   } catch (error) {
     console.error('[ERROR] Error fetching featured projects:', error)
@@ -355,15 +250,13 @@ function extractFeaturedMetadata(readme: string) {
   // Regex mais tolerante para capturar o bloco, aceitando qualquer coisa entre <!-- e PORTFOLIO-FEATURED
   const blockRegex = /<!--[^\S\r\n]*PORTFOLIO-FEATURED([\s\S]*?)-->/im;
   const match = readme.match(blockRegex);
-  console.log('[DEBUG][PORTFOLIO] Bloco capturado:', match ? match[1] : 'NADA ENCONTRADO');
   if (!match) {
-    console.log('[DEBUG][PORTFOLIO] Nenhum bloco PORTFOLIO-FEATURED encontrado.');
     return null;
   }
   const block = match[1];
   // Regex para capturar chave: valor (aceita espaços, acentos, português/inglês)
   const fieldRegex = /^\s*([\wÀ-ÿ\-]+)\s*:\s*(.+)$/gmi;
-  let fields: Record<string, string> = {};
+  const fields: Record<string, string> = {};
   let m;
   while ((m = fieldRegex.exec(block)) !== null) {
     let key = m[1].trim().toLowerCase()
@@ -376,19 +269,14 @@ function extractFeaturedMetadata(readme: string) {
     if (key === 'demo') key = 'demo';
     fields[key] = m[2].trim();
   }
-  console.log('[DEBUG][PORTFOLIO] Campos extraídos:', fields);
   return fields;
 }
 
 function parseFeaturedProject(repo: Repo): FeaturedProject | null {
-  console.log('[DEBUG][PORTFOLIO] Chamando parseFeaturedProject para:', repo.name);
   if (!repo.readme_content) {
-    console.log('[DEBUG][PORTFOLIO] Repo sem readme_content:', repo.name);
     return null;
   }
-  console.log('[DEBUG][PORTFOLIO] Início do README:', repo.readme_content?.substring(0, 500));
   const meta = extractFeaturedMetadata(repo.readme_content);
-  console.log('[DEBUG][PORTFOLIO] Metadados extraídos do README:', meta);
   if (!meta) return null;
   return {
     id: repo.id,
