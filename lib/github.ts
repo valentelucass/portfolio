@@ -28,7 +28,28 @@ export async function fetchGithubSkills(username: string): Promise<Skill[]> {
   try {
     logger.info("Buscando skills do GitHub para:", { username });
     
-    // Busca repositórios com autenticação
+    // Se estiver no client, buscar da API interna
+    if (typeof window !== 'undefined') {
+      const res = await fetch('/api/github/skills');
+      if (!res.ok) {
+        throw new Error(`Erro ao buscar skills (API interna): ${res.status}`);
+      }
+      const skills = await res.json();
+      
+      // Salva cache apenas se localStorage estiver disponível
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ data: skills, timestamp: Date.now() }));
+          logger.info("Cache das skills salvo");
+        } catch (error) {
+          // Ignora erro de localStorage
+        }
+      }
+      
+      return skills;
+    }
+    
+    // Se estiver no server, buscar direto do GitHub (com token)
     const headers = getAuthHeaders();
     const reposUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
     const reposRes = await fetch(reposUrl, { headers });
@@ -68,16 +89,6 @@ export async function fetchGithubSkills(username: string): Promise<Skill[]> {
       .sort((a, b) => b.percentage - a.percentage);
 
     logger.info("Skills encontradas", { count: skills.length });
-
-    // Salva cache apenas se localStorage estiver disponível
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ data: skills, timestamp: Date.now() }));
-        logger.info("Cache das skills salvo");
-      } catch (error) {
-        // Ignora erro de localStorage
-      }
-    }
 
     return skills;
   } catch (error) {

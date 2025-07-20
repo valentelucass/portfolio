@@ -53,7 +53,8 @@ export function FloatingNav() {
 
           {isMobile ? (
             <div className="relative flex items-center justify-between">
-              <Link href="/" className="font-bold text-lg">
+              <Link href="/" className="font-bold text-lg flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 animate-pulse"></div>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
                 <span className="text-foreground name-andrade">Andrade</span>
               </Link>
@@ -68,7 +69,8 @@ export function FloatingNav() {
             </div>
           ) : (
             <div className="relative flex items-center gap-1">
-              <Link href="/" className="font-bold text-lg mr-4">
+              <Link href="/" className="font-bold text-lg mr-4 flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 animate-pulse"></div>
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">Lucas</span>
                 <span className="text-foreground name-andrade">Andrade</span>
               </Link>
