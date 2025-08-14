@@ -1,82 +1,66 @@
-// valentelucass/portfolio/portfolio-55ceec362ece7fba7b1ce304e781e5480562f2cf/app/api/github/skills/route.ts
-
-import { NextResponse } from 'next/server';
-
-interface Repo {
-  name: string;
-  languages_url: string;
-  fork: boolean;
-  archived: boolean;
-}
+import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const username = 'valentelucass';
+    const username = 'valentelucass'
+    
+    // Busca repositórios com autenticação
     const headers = {
       Authorization: `token ${process.env.GITHUB_TOKEN}`,
       'Content-Type': 'application/json',
-    };
-
-    // 1. Busca todos os repositórios do qual você é dono
-    const reposUrl = `https://api.github.com/users/${username}/repos?type=owner&per_page=100`;
-    const reposRes = await fetch(reposUrl, { headers, cache: 'no-store' });
-
+    }
+    
+    const reposUrl = `https://api.github.com/users/${username}/repos?per_page=100`
+    const reposRes = await fetch(reposUrl, { headers })
+    
     if (!reposRes.ok) {
-      throw new Error(`Erro ao buscar repositórios: ${reposRes.status}`);
+      throw new Error(`Erro ao buscar repositórios: ${reposRes.status}`)
+    }
+    
+    const repos = await reposRes.json()
+
+    // Busca linguagens de cada repo
+    const langStats: Record<string, number> = {}
+    for (const repo of repos) {
+      try {
+        const langRes = await fetch(repo.languages_url, { headers })
+        if (!langRes.ok) continue
+        const langs = await langRes.json()
+        for (const [lang, bytes] of Object.entries(langs)) {
+          langStats[lang] = (langStats[lang] || 0) + (bytes as number)
+        }
+      } catch (error) {
+        // Continua para o próximo repo se houver erro
+        continue
+      }
     }
 
-    const allRepos: Repo[] = await reposRes.json();
-
-    // 2. Filtra para remover repositórios arquivados (mantendo a lógica de não excluir nenhum outro)
-    const activeRepos = allRepos.filter(repo => !repo.archived);
-    
-    const langStats: Record<string, number> = {};
-
-    // 3. Soma os bytes de cada linguagem em todos os repositórios ativos
-    await Promise.all(
-      activeRepos.map(async (repo) => {
-        try {
-          const langRes = await fetch(repo.languages_url, { headers, cache: 'no-store' });
-          if (!langRes.ok) return;
-
-          const langs: Record<string, number> = await langRes.json();
-          for (const [lang, bytes] of Object.entries(langs)) {
-            langStats[lang] = (langStats[lang] || 0) + bytes;
-          }
-        } catch (error) {
-          console.error(`Falha ao processar linguagens para o repositório ${repo.name}:`, error);
-        }
-      })
-    );
-    
-    // 4. Calcula a porcentagem com base no total de bytes
-    const totalBytes = Object.values(langStats).reduce((acc, bytes) => acc + bytes, 0);
-
-    if (totalBytes === 0) {
-      return NextResponse.json([], { status: 200 });
+    // Calcula percentuais
+    const total = Object.values(langStats).reduce((a, b) => a + b, 0)
+    if (total === 0) {
+      throw new Error("Nenhuma linguagem encontrada nos repositórios")
     }
 
     const skills = Object.entries(langStats)
-      .map(([name, bytes]) => ({
-        name,
-        percentage: Math.round((bytes / totalBytes) * 100),
-        color: getSkillColor(name),
+      .map(([name, bytes]) => ({ 
+        name, 
+        percentage: Math.round((bytes / total) * 100),
+        color: getSkillColor(name)
       }))
-      .filter(skill => skill.percentage > 0)
-      .sort((a, b) => b.percentage - a.percentage);
+      .sort((a, b) => b.percentage - a.percentage)
 
-    return NextResponse.json(skills, {
+    return NextResponse.json(skills, { 
       status: 200,
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
       },
-    });
+    })
   } catch (error) {
-    console.error('Erro ao buscar skills:', error);
+    console.error('Erro ao buscar skills:', error)
     return NextResponse.json(
       { error: 'Erro ao buscar skills do GitHub' },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -89,5 +73,6 @@ function getSkillColor(skillName: string): string {
     'Docker': '#2496ED', 'Kubernetes': '#326CE5', 'Git': '#F05032', 'GitHub': '#181717', 'GitLab': '#FC6D26', 'Jenkins': '#D24939', 'Terraform': '#844FBA',
     'Flutter': '#02569B', 'React Native': '#61dafb', 'Android': '#3DDC84', 'iOS': '#000000'
   };
-  return colors[skillName] || '#6b7280';
+  
+  return colors[skillName] || '#6b7280'
 }
