@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 
+export const runtime = 'nodejs';
+
 export async function GET() {
+  if (!process.env.GITHUB_TOKEN) {
+    return NextResponse.json(
+      { error: 'GITHUB_TOKEN não configurado no servidor' },
+      { status: 500 }
+    );
+  }
   const res = await fetch('https://api.github.com/users/valentelucass/starred?per_page=100', {
     headers: {
       Authorization: `token ${process.env.GITHUB_TOKEN}`,
