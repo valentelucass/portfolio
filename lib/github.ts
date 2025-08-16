@@ -237,10 +237,11 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
       featuredProjects.push(project);
     }
 
-    // Sort by stars and recent updates
+    // Sort by most recent update first, then by stars as a tiebreaker
     featuredProjects.sort((a, b) => {
-      if (a.stars !== b.stars) return b.stars - a.stars
-      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      const byUpdated = new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      if (byUpdated !== 0) return byUpdated
+      return b.stars - a.stars
     })
 
     // Cache the result
