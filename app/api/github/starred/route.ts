@@ -9,7 +9,7 @@ export async function GET() {
       { status: 500 }
     );
   }
-  const res = await fetch('https://api.github.com/users/valentelucass/starred?per_page=100', {
+  const res = await fetch('https://api.github.com/users/valentelucass/starred?per_page=100&sort=updated&direction=desc', {
     headers: {
       Authorization: `token ${process.env.GITHUB_TOKEN}`,
       'Content-Type': 'application/json',
@@ -40,6 +40,15 @@ export async function GET() {
       return repo;
     })
   );
+
+  // Ordenação determinística: updated_at desc, stargazers_count desc, id desc
+  reposWithReadme.sort((a: any, b: any) => {
+    const byUpdated = new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    if (byUpdated !== 0) return byUpdated;
+    const byStars = (b.stargazers_count || 0) - (a.stargazers_count || 0);
+    if (byStars !== 0) return byStars;
+    return (b.id || 0) - (a.id || 0);
+  });
 
   return NextResponse.json(reposWithReadme, { status: res.status });
 } 
