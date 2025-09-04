@@ -245,96 +245,113 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="group relative bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300"
+      whileHover={{ y: -5 }}
+      className="group"
     >
-      {/* Imagem do projeto */}
-      {project.imageUrl && (
-        <div className="relative h-48 overflow-hidden">
-          <Image
-            src={project.imageUrl}
-            alt={project.name}
-            width={800}
-            height={400}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        </div>
-      )}
+      <div className="relative h-full overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 transition-all duration-300 group-hover:border-cyan-500/50 shadow-lg shadow-cyan-500/5 group-hover:shadow-cyan-500/20">
+        {/* Efeito de gradiente na borda */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+        
+        {/* Efeito de brilho no canto superior */}
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-700"></div>
 
-      <div className="p-6">
-        {/* Título e descrição */}
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
-          {project.name}
-        </h3>
-        <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify">
-          {project.description}
-        </p>
-
-        {/* Fallback visual para README ausente com tooltip animado */}
-        {(!project.readmeContent || project.readmeContent.trim() === "") && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-2 mb-4 animate-pulse group/readme-fallback cursor-help">
-                  <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <span className="text-yellow-300 text-xs md:text-sm">
-                    README.md não encontrado ou não pôde ser carregado.
-                  </span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="bg-zinc-900 text-yellow-200 border-yellow-400 animate-fade-in">
-                Adicione um <b>README.md</b> ao repositório para exibir detalhes completos do projeto aqui.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        {/* Imagem do projeto */}
+        {project.imageUrl && (
+          <div className="relative overflow-hidden h-52">
+            {/* Overlay gradiente ao passar o mouse */}
+            <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+            {/* Overlay gradiente permanente para legibilidade do texto */}
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent z-10"></div>
+            
+            <Image
+              src={project.imageUrl}
+              alt={project.name}
+              width={800}
+              height={400}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            
+            {/* Badge de categoria removido conforme solicitado */}
+          </div>
         )}
 
-        {/* Tecnologias */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.technologies?.map((tech, techIndex) => (
-            <span
-              key={techIndex}
-              className={badgeClassInverted}
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
+        <div className="p-6">
+          {/* Título com efeito de hover */}
+          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300">
+            {project.name}
+          </h3>
+          
+          {/* Descrição */}
+          <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify">
+            {project.description}
+          </p>
 
-        {/* Botões */}
-        <div className="flex gap-3">
-          {project.demoUrl && (
-            <Button
-              size="sm"
-              className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
-              onClick={() => window.open(project.demoUrl, '_blank')}
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Demo
-            </Button>
+          {/* Fallback visual para README ausente com tooltip animado */}
+          {(!project.readmeContent || project.readmeContent.trim() === "") && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2 mb-4 animate-pulse group/readme-fallback cursor-help">
+                    <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span className="text-yellow-300 text-xs md:text-sm">
+                      README.md não encontrado ou não pôde ser carregado.
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="bg-zinc-900 text-yellow-200 border-yellow-400 animate-fade-in">
+                  Adicione um <b>README.md</b> ao repositório para exibir detalhes completos do projeto aqui.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
-          {project.githubUrl && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex-1 border-zinc-600 text-zinc-300 btn-text hover:bg-zinc-700"
-              onClick={() => window.open(project.githubUrl, '_blank')}
-            >
-              <Github className="w-4 h-4 mr-2" />
-              Código
-            </Button>
-          )}
-          {!project.githubUrl && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:bg-zinc-700 disabled:text-zinc-400 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border bg-zinc-800 hover:text-accent-foreground h-9 rounded-md px-3 flex-1 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
-              disabled
-            >
-              <Github className="w-4 h-4 mr-2" />
-              Código
-            </Button>
-          )}
+
+          {/* Tecnologias com efeito de hover */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {project.technologies?.map((tech, techIndex) => (
+              <span
+                key={techIndex}
+                className="inline-flex items-center rounded-md border border-zinc-700/50 bg-zinc-800/80 px-2 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-700/80 hover:text-cyan-400 transition-colors duration-300"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+
+          {/* Botões com efeito de hover melhorado - ajustados para mesma linha com mais largura */}
+          <div className="flex justify-center gap-4 mt-auto pt-4 border-t border-zinc-700/50">
+            {project.githubUrl ? (
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1 border-zinc-700 hover:border-cyan-500/50 hover:text-cyan-400 transition-all duration-300"
+                onClick={() => window.open(project.githubUrl, '_blank')}
+              >
+                <Github className="w-4 h-4 mr-2" />
+                Código
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1 border-zinc-700 text-zinc-400 opacity-50 cursor-not-allowed"
+                disabled
+              >
+                <Github className="w-4 h-4 mr-2" />
+                Código
+              </Button>
+            )}
+            
+            {project.demoUrl && (
+              <Button
+                size="sm"
+                className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 border-0 transition-all duration-300 shadow-md shadow-cyan-500/20 hover:shadow-cyan-500/40"
+                onClick={() => window.open(project.demoUrl, '_blank')}
+              >
+                Demo
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
