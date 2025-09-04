@@ -18,28 +18,20 @@ export default function GitHubSkills({ username, fallbackSkills = [] }: GitHubSk
 
   useEffect(() => {
     const loadSkills = async () => {
+      // Captura informações para debug sem usar console.log
+      const debugLogs: string[] = []
+      
       try {
         setLoading(true)
         setError(null)
         setDebugInfo([])
         
-        // Adiciona logs de debug
-        const originalLog = console.log
-        const debugLogs: string[] = []
-        console.log = (...args) => {
-          debugLogs.push(args.join(' '))
-          originalLog.apply(console, args)
-        }
-
-        console.log('[DEBUG] Iniciando busca de skills para:', username)
+        debugLogs.push(`[DEBUG] Iniciando busca de skills para: ${username}`)
         
         const githubSkills = await fetchGithubSkills(username)
         setSkills(githubSkills)
         
-        // Restaura console.log original
-        console.log = originalLog
-        
-        // Filtra apenas logs de debug relevantes
+        // Define logs relevantes para debug
         const relevantLogs = debugLogs.filter(log => 
           log.includes('[DEBUG]') || 
           log.includes('Erro') || 
@@ -49,9 +41,9 @@ export default function GitHubSkills({ username, fallbackSkills = [] }: GitHubSk
         setDebugInfo(relevantLogs)
         
       } catch (err) {
-        console.error('Erro ao carregar skills:', err)
         setError(err instanceof Error ? err.message : 'Erro desconhecido')
         setSkills(fallbackSkills)
+        debugLogs.push(`Erro ao carregar skills: ${err instanceof Error ? err.message : 'Erro desconhecido'}`)
       } finally {
         setLoading(false)
       }
@@ -165,4 +157,4 @@ export default function GitHubSkills({ username, fallbackSkills = [] }: GitHubSk
       ))}
     </div>
   )
-} 
+}

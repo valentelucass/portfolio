@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useMemo } from 'react'
+import Image from 'next/image'
 import { getFeaturedProjects } from '@/lib/github'
 import { FeaturedProject } from '@/types/github'
 import { motion } from 'framer-motion'
@@ -68,20 +69,15 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
 
   useEffect(() => {
     const loadProjects = async () => {
+      // Captura informações para debug sem usar console.log
+      const debugLogs: string[] = []
+      
       try {
         setLoading(true)
         setError(null)
         setDebugInfo([])
         
-        // Adiciona logs de debug
-        const originalLog = console.log
-        const debugLogs: string[] = []
-        console.log = (...args) => {
-          debugLogs.push(args.join(' '))
-          originalLog.apply(console, args)
-        }
-
-        console.log('[DEBUG] Iniciando busca de projetos em destaque para:', username)
+        debugLogs.push(`[DEBUG] Iniciando busca de projetos em destaque para: ${username}`)
         
         const featuredProjects = await getFeaturedProjects(username)
         
@@ -102,10 +98,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
         })
         setCategoryPages(initialCategoryPages)
         
-        // Restaura console.log original
-        console.log = originalLog
-        
-        // Filtra apenas logs de debug relevantes
+        // Define logs relevantes para debug
         const relevantLogs = debugLogs.filter(log => 
           log.includes('[DEBUG]') || 
           log.includes('Erro') || 
@@ -118,8 +111,8 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
         setDebugInfo(relevantLogs)
         
       } catch (err) {
-        console.error('Erro ao carregar projetos em destaque:', err)
         setError(err instanceof Error ? err.message : 'Erro desconhecido')
+        debugLogs.push(`Erro ao carregar projetos em destaque: ${err instanceof Error ? err.message : 'Erro desconhecido'}`)
       } finally {
         setLoading(false)
       }
@@ -257,9 +250,11 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
       {/* Imagem do projeto */}
       {project.imageUrl && (
         <div className="relative h-48 overflow-hidden">
-          <img
+          <Image
             src={project.imageUrl}
             alt={project.name}
+            width={800}
+            height={400}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

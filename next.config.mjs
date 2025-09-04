@@ -6,9 +6,21 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false, // Habilitado para qualidade
   },
+  // Otimizações para produção e Vercel
+  reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     unoptimized: false, // Habilitado para otimização
-    domains: ['raw.githubusercontent.com', 'avatars.githubusercontent.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+    ],
     formats: ['image/webp', 'image/avif'],
   },
   // Headers de segurança

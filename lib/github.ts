@@ -254,8 +254,8 @@ export async function getFeaturedProjects(username: string): Promise<FeaturedPro
 
     return featuredProjects
   } catch (error) {
-    console.error('[ERROR] Error fetching featured projects:', error)
-    console.log('[FALLBACK] Usando projetos de fallback devido ao erro')
+    logger.error('Error fetching featured projects:', error)
+    logger.info('[FALLBACK] Usando projetos de fallback devido ao erro')
     return getFallbackProjects()
   }
 }
