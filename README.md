@@ -98,8 +98,70 @@ portfolio/
 ```bash
 # Desenvolvimento
 npm run dev              # Inicia servidor de desenvolvimento
-npm run build            # Build de produção
-npm run start            # Inicia servidor de produção
+npm run build            # Compila o projeto para produção
+npm run start            # Inicia o servidor de produção
+
+# Qualidade de código
+npm run lint             # Verifica problemas de linting
+npm run lint:fix         # Corrige problemas de linting automaticamente
+npm run type-check       # Verifica tipos TypeScript
+
+# Manutenção
+npm run maintenance      # Interface para todos os scripts de manutenção
+npm run health           # Verifica a saúde do projeto
+npm run cleanup          # Remove arquivos temporários e caches
+npm run clean-backups    # Remove backups antigos
+npm run check-deps       # Verifica dependências não utilizadas
+npm run check-dupes      # Verifica arquivos duplicados
+npm run organize         # Organiza arquivos na raiz do projeto
+
+# Dependências
+npm run update-deps      # Atualiza dependências
+npm run audit            # Verifica vulnerabilidades
+npm run audit:fix        # Corrige vulnerabilidades automaticamente
+```
+
+## 🧹 Manutenção do Projeto
+
+## 🔍 Verificação de Saúde do Projeto
+
+```bash
+# ⭐️ RECOMENDADO: Execute este comando regularmente para manter seu projeto saudável! ⭐️
+npm run health
+```
+
+> **Dica**: Execute este comando pelo menos uma vez por semana para garantir que seu projeto permaneça limpo e otimizado!
+
+O script `npm run health` gera um relatório completo e detalhado sobre a saúde do seu projeto, analisando:
+
+- 🗑️ **Arquivos desnecessários**: Identifica arquivos temporários, caches e outros arquivos que podem ser removidos com segurança
+- 🔄 **Arquivos duplicados**: Detecta arquivos com conteúdo idêntico que ocupam espaço desnecessário
+- 📦 **Dependências não utilizadas**: Encontra pacotes instalados que não estão sendo usados no código
+- ⚠️ **Inconsistências de configuração**: Identifica problemas como múltiplos arquivos de configuração para a mesma ferramenta
+- 💡 **Sugestões de melhoria**: Fornece recomendações personalizadas para otimizar seu projeto
+
+### Outros Scripts de Manutenção
+
+Além do script principal de saúde, o projeto inclui vários outros scripts para manter o código limpo e organizado:
+
+- **Limpeza**:
+  - `npm run cleanup` - Remove arquivos temporários e caches
+  - `npm run clean-backups` - Remove backups antigos
+
+- **Verificação**:
+  - `npm run check-deps` - Verifica dependências não utilizadas
+  - `npm run check-dupes` - Verifica arquivos duplicados
+
+- **Organização**:
+  - `npm run organize` - Estrutura os arquivos de configuração e documentação em pastas apropriadas
+
+Para executar todos os scripts de manutenção de uma vez:
+
+```bash
+npm run maintenance
+```
+
+Para mais detalhes sobre cada script, consulte a documentação na pasta `scripts/`.
 
 # Qualidade de Código
 npm run lint             # Executa ESLint

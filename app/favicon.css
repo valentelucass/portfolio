@@ -1,0 +1,9 @@
+/* Estilo para tornar o favicon redondo */
+/* Nota: Este CSS não afeta diretamente o favicon na aba do navegador,
+   mas pode afetar ícones dentro da página que usam as mesmas referências */
+link[rel="icon"],
+link[rel="shortcut icon"],
+link[rel="apple-touch-icon"] {
+  border-radius: 50%;
+  overflow: hidden;
+}

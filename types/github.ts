@@ -38,4 +38,5 @@ export interface FeaturedProject {
   forks: number
   updatedAt: string
   readmeContent?: string
-} 
+  category?: string
+}

@@ -9,13 +9,35 @@ export async function GET() {
       { status: 500 }
     );
   }
-  const res = await fetch('https://api.github.com/users/valentelucass/starred?per_page=100&sort=updated&direction=desc', {
-    headers: {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    next: { revalidate: 3600 },
-  });
+  
+  try {
+    // Formato correto de autorização para tokens pessoais do GitHub
+    const res = await fetch('https://api.github.com/users/valentelucass/starred?per_page=100&sort=updated&direction=desc', {
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      next: { revalidate: 3600 },
+    });
+    
+    if (!res.ok) {
+      // Se a resposta não for bem-sucedida, retorna o erro
+      const errorData = await res.json();
+      console.error('Erro na API do GitHub:', {
+        status: res.status,
+        statusText: res.statusText,
+        message: errorData.message,
+        documentation_url: errorData.documentation_url
+      });
+      
+      return NextResponse.json(
+        { 
+          error: `Erro ao buscar repositórios estrelados: ${res.status} - ${errorData.message || res.statusText}`,
+          documentation_url: errorData.documentation_url
+        },
+        { status: res.status }
+      );
+    }
   const repos = await res.json();
 
   // Buscar o README de cada repo
@@ -24,7 +46,7 @@ export async function GET() {
       try {
         const readmeRes = await fetch(`https://api.github.com/repos/${repo.owner.login}/${repo.name}/readme`, {
           headers: {
-            Authorization: `token ${process.env.GITHUB_TOKEN}`,
+            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
             'Content-Type': 'application/json',
           },
         });
@@ -50,5 +72,17 @@ export async function GET() {
     return (b.id || 0) - (a.id || 0);
   });
 
-  return NextResponse.json(reposWithReadme, { status: res.status });
-} 
+  return NextResponse.json(reposWithReadme, { 
+    status: 200,
+    headers: {
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+    },
+  });
+  } catch (error) {
+    console.error('Erro ao buscar repositórios estrelados:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Erro desconhecido ao buscar repositórios estrelados' },
+      { status: 500 }
+    );
+  }
+}

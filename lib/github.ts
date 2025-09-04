@@ -128,7 +128,7 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Removido NEXT_PUBLIC_ para seg
 
 function getAuthHeaders(): Record<string, string> {
   if (GITHUB_TOKEN) {
-    const headers = { Authorization: `token ${GITHUB_TOKEN}` };
+    const headers = { Authorization: `Bearer ${GITHUB_TOKEN}` };
     return headers;
   }
   return {};
@@ -391,4 +391,4 @@ if (typeof window !== 'undefined') {
   Object.keys(localStorage).forEach(k => {
     if (k.startsWith('featured-projects-')) localStorage.removeItem(k);
   });
-} 
+}

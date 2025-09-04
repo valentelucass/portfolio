@@ -43,7 +43,7 @@ export function FloatingNav() {
   return (
     <>
       <motion.div
-        className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`fixed top-6 ${isMobile ? "left-[40%] -translate-x-1/2" : "left-1/2 -translate-x-1/2"} z-50 ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         initial={{ y: -100 }}
         animate={{ y: isVisible ? 0 : -100 }}
         transition={{ duration: 0.3 }}
@@ -75,14 +75,19 @@ export function FloatingNav() {
                 <span className="text-foreground name-andrade">Andrade</span>
               </Link>
               {navItems.map((item) => (
-                <Link
+                <motion.div
                   key={item.name}
-                  href={item.href}
-                  className="px-3 py-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={handleNavClick}
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ type: "tween", duration: 0.2 }}
                 >
-                  {item.name}
-                </Link>
+                  <Link
+                    href={item.href}
+                    className="px-3 py-1 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-gradient-to-r hover:from-cyan-400 hover:to-blue-500 hover:bg-clip-text hover:text-transparent transition-all duration-300"
+                    onClick={handleNavClick}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
               ))}
             </div>
           )}

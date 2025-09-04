@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, Github, Linkedin } from "lucide-react"
+import { ArrowRight, Github, Linkedin, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ProjectCard } from "@/components/project-card"
@@ -15,6 +15,7 @@ import { SectionHeading } from "@/components/section-heading"
 import { GlassmorphicCard } from "@/components/glassmorphic-card"
 import GitHubSkills from "@/components/github-skills"
 import FeaturedProjects from "@/components/featured-projects"
+import { ContactForm } from "@/components/contact-form"
 
 // Função para scroll suave até uma seção
 const scrollToSection = (sectionId: string) => {
@@ -181,7 +182,7 @@ export default function Portfolio() {
                   </div>
                   <div className="space-y-1">
                     <div className="text-sm text-zinc-500">Disponibilidade</div>
-                    <div className="font-medium text-green-500">Pronto para novos desafios</div>
+                    <div className="font-medium text-green-500">Estagiando!</div>
                   </div>
                 </div>
 
@@ -264,7 +265,7 @@ export default function Portfolio() {
         <div className="container relative z-10">
           <SectionHeading title="Entre em Contato" subtitle="Vamos trabalhar juntos" />
 
-          <div className="flex justify-center mt-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
             <GlassmorphicCard>
               <h3 className="text-2xl font-bold mb-6">Informações de Contato</h3>
               <div className="space-y-6">
@@ -274,7 +275,7 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <div className="text-sm text-zinc-500">LinkedIn</div>
-                    <div className="font-medium">https://www.linkedin.com/in/dev-lucasandrade/</div>
+                    <div className="font-medium"><a href="https://www.linkedin.com/in/dev-lucasandrade/" target="_blank" rel="noopener noreferrer">linkedin.com/in/dev-lucasandrade</a></div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -283,7 +284,7 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <div className="text-sm text-zinc-500">GitHub</div>
-                    <div className="font-medium">github.com/valentelucass</div>
+                    <div className="font-medium"><a href="https://github.com/valentelucass" target="_blank" rel="noopener noreferrer">github.com/valentelucass</a></div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -303,10 +304,12 @@ export default function Portfolio() {
                 <h4 className="text-lg font-medium mb-4">Status Atual</h4>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="text-sm md:text-base">Disponível para oportunidades de tempo integral</span>
+                  <span className="text-sm md:text-base">Contratado como estagiário pela Rodogarcia!</span>
                 </div>
               </div>
             </GlassmorphicCard>
+            
+            <ContactForm />
           </div>
         </div>
       </section>

@@ -23,7 +23,7 @@ export async function GET() {
   try {
     const username = 'valentelucass';
     const headers = {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
       'Content-Type': 'application/json',
     };
     const reposUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
