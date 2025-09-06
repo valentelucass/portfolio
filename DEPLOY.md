@@ -15,9 +15,18 @@ Este documento contém instruções para fazer o deploy deste projeto na platafo
 Antes de fazer o deploy, certifique-se de configurar as seguintes variáveis de ambiente na Vercel:
 
 - `GITHUB_TOKEN`: Token de acesso à API do GitHub (opcional, mas recomendado para evitar limitações de taxa)
+- `GMAIL_APP_PASSWORD`: Senha de aplicativo do Gmail (obrigatório para o funcionamento do formulário de contato)
 
-Você pode gerar um token em: https://github.com/settings/tokens
+Você pode gerar um token do GitHub em: https://github.com/settings/tokens
 Permissões necessárias: `public_repo`, `read:user`
+
+Para obter uma senha de aplicativo do Gmail:
+1. Acesse sua conta Google
+2. Vá para Gerenciar sua Conta Google > Segurança
+3. Ative a verificação em duas etapas (se ainda não estiver ativa)
+4. Depois de ativar, volte para a página de segurança e procure por "Senhas de app"
+5. Gere uma nova senha de aplicativo para "Outro" (dê um nome como "Portfolio")
+6. Use a senha gerada (16 caracteres sem espaços) como valor para `GMAIL_APP_PASSWORD`
 
 ### 2. Arquivos de Configuração
 
