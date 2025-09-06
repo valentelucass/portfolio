@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 interface ProjectCardProps {
   title: string
@@ -63,20 +64,44 @@ export function ProjectCard({ title, description, tags, image, demoUrl, repoUrl 
             {/* Título com efeito de hover */}
             <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-400 transition-colors duration-300">{title}</h3>
             
-            {/* Descrição */}
-            <p className="text-sm md:text-base text-muted-foreground mb-4 text-justify">{description}</p>
+            {/* Descrição - limitada a 3 linhas */}
+            <p className="text-sm md:text-base text-muted-foreground mb-4 text-justify line-clamp-3 overflow-hidden">{description}</p>
 
-            {/* Tags com efeito de hover */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {tags.map((tag, index) => (
-                <Badge 
-                  key={index} 
-                  variant="inverted"
-                  className="bg-zinc-800/80 hover:bg-zinc-700/80 transition-colors duration-300"
-                >
-                  {tag}
-                </Badge>
-              ))}
+            {/* Tags com efeito de hover - em carrossel */}
+            <div className="relative mb-6 px-7"> {/* Adicionado padding para as setas não sobreporem */}
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: tags.length > 3,
+                  dragFree: true
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2">
+                  {tags.map((tag, index) => (
+                    <CarouselItem key={index} className="pl-2 basis-auto">
+                      <Badge 
+                        variant="inverted"
+                        className="bg-zinc-800/80 hover:bg-zinc-700/80 transition-colors duration-300 whitespace-nowrap"
+                      >
+                        {tag}
+                      </Badge>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {tags.length > 3 && (
+                  <>
+                    <CarouselPrevious 
+                      className="absolute -left-8 top-1/2 -translate-y-1/2 h-6 w-6 bg-zinc-800/80 hover:bg-zinc-700/80"
+                      variant="ghost"
+                    />
+                    <CarouselNext 
+                      className="absolute -right-8 top-1/2 -translate-y-1/2 h-6 w-6 bg-zinc-800/80 hover:bg-zinc-700/80"
+                      variant="ghost"
+                    />
+                  </>
+                )}
+              </Carousel>
             </div>
 
             {/* Botões com efeito de hover melhorado - ajustados para mesma linha com mais largura */}

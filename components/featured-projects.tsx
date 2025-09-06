@@ -10,6 +10,7 @@ import { ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { badgeClass, badgeClassInverted } from "@/components/ui/badge"
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 interface FeaturedProjectsProps {
   username: string
@@ -283,8 +284,8 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
             {project.name}
           </h3>
           
-          {/* Descrição */}
-          <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify">
+          {/* Descrição - limitada a 3 linhas */}
+          <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify line-clamp-3 overflow-hidden">
             {project.description}
           </p>
 
@@ -307,16 +308,40 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
             </TooltipProvider>
           )}
 
-          {/* Tecnologias com efeito de hover */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {project.technologies?.map((tech, techIndex) => (
-              <span
-                key={techIndex}
-                className="inline-flex items-center rounded-md border border-zinc-700/50 bg-zinc-800/80 px-2 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-700/80 hover:text-cyan-400 transition-colors duration-300"
-              >
-                {tech}
-              </span>
-            ))}
+          {/* Tecnologias com efeito de hover - em carrossel */}
+          <div className="relative mb-6 px-7"> {/* Adicionado padding para as setas não sobreporem */}
+            <Carousel
+              opts={{
+                align: "start",
+                loop: project.technologies?.length > 3,
+                dragFree: true
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2">
+                {project.technologies?.map((tech, techIndex) => (
+                  <CarouselItem key={techIndex} className="pl-2 basis-auto">
+                    <span
+                      className="inline-flex items-center rounded-md border border-zinc-700/50 bg-zinc-800/80 px-2 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-700/80 hover:text-cyan-400 transition-colors duration-300 whitespace-nowrap"
+                    >
+                      {tech}
+                    </span>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {project.technologies?.length > 3 && (
+                <>
+                  <CarouselPrevious 
+                    className="absolute -left-8 top-1/2 -translate-y-1/2 h-6 w-6 bg-zinc-800/80 hover:bg-zinc-700/80"
+                    variant="ghost"
+                  />
+                  <CarouselNext 
+                    className="absolute -right-8 top-1/2 -translate-y-1/2 h-6 w-6 bg-zinc-800/80 hover:bg-zinc-700/80"
+                    variant="ghost"
+                  />
+                </>
+              )}
+            </Carousel>
           </div>
 
           {/* Botões com efeito de hover melhorado - ajustados para mesma linha com mais largura */}

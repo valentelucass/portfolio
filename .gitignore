@@ -19,6 +19,12 @@
 /.next/
 /out/
 .swc/
+.next-sitemap.config.js
+/public/robots.txt
+/public/sitemap*.xml
+/public/sitemap-*.json
+/analyze/
+/.lighthouseci/
 
 # production
 /build
@@ -37,6 +43,9 @@ logs
 # local env files
 .env*.local
 .env
+.env.development
+.env.test
+.env.production
 
 # vercel
 .vercel
@@ -69,6 +78,10 @@ Thumbs.db
 # Backup folders
 /versões_anteriores/
 /backups/
+/old/
+/archive/
+*.bak
+*.backup
 
 # Cache
 .cache/
@@ -98,6 +111,18 @@ storybook-static/
 **/public/sw.js
 **/public/workbox-*.js
 **/public/worker-*.js
+**/public/fallback-*.js
+**/public/precache-*.js
+
+# Sitemap
+**/public/sitemap*.xml
+**/public/robots.txt
+
+# Generated files
+**/public/feed.xml
+
+# Local Netlify folder
+.netlify
 **/public/sw.js.map
 **/public/workbox-*.js.map
 **/public/worker-*.js.map

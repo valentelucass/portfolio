@@ -57,6 +57,10 @@ cp .env.example .env.local
 
 # Adicione seu token do GitHub (opcional)
 GITHUB_TOKEN=seu_token_aqui
+
+# Configuração para envio de email
+GMAIL_USER=seu_email@gmail.com
+GMAIL_APP_PASSWORD=sua_senha_de_aplicativo
 ```
 
 4. **Execute em desenvolvimento**
@@ -91,8 +95,6 @@ portfolio/
 ├── styles/               # Arquivos CSS organizados
 ├── public/               # Arquivos estáticos
 └── diagnostics/          # Documentação e diagnósticos
-```
-
 ## 🔧 Scripts Disponíveis
 
 ```bash
@@ -100,13 +102,49 @@ portfolio/
 npm run dev              # Inicia servidor de desenvolvimento
 npm run build            # Compila o projeto para produção
 npm run start            # Inicia o servidor de produção
+```
 
-# Qualidade de código
+## 📧 Configuração do Formulário de Contato
+
+Para que o formulário de contato funcione corretamente, você precisa configurar as variáveis de ambiente relacionadas ao email:
+
+### Desenvolvimento Local
+
+1. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```
+GMAIL_USER=seu_email@gmail.com
+GMAIL_APP_PASSWORD=sua_senha_de_aplicativo_do_gmail
+```
+
+### Implantação na Vercel
+
+1. No dashboard da Vercel, vá para seu projeto
+2. Navegue até "Settings" > "Environment Variables"
+3. Adicione as seguintes variáveis:
+   - `GMAIL_USER`: seu email do Gmail
+   - `GMAIL_APP_PASSWORD`: senha de aplicativo do Gmail
+
+### Como obter uma senha de aplicativo do Gmail
+
+1. Acesse sua conta Google
+2. Vá para Gerenciar sua Conta Google > Segurança
+3. Ative a verificação em duas etapas (se ainda não estiver ativa)
+4. Depois de ativar, volte para a página de segurança e procure por "Senhas de app"
+5. Gere uma nova senha de aplicativo para "Outro" (dê um nome como "Portfolio")
+6. Use a senha gerada (16 caracteres sem espaços) como valor para `GMAIL_APP_PASSWORD`
+
+## 🔍 Qualidade de código
+
+```bash
 npm run lint             # Verifica problemas de linting
 npm run lint:fix         # Corrige problemas de linting automaticamente
 npm run type-check       # Verifica tipos TypeScript
+```
 
-# Manutenção
+## 🧹 Manutenção
+
+```bash
 npm run maintenance      # Interface para todos os scripts de manutenção
 npm run health           # Verifica a saúde do projeto
 npm run cleanup          # Remove arquivos temporários e caches
@@ -114,8 +152,11 @@ npm run clean-backups    # Remove backups antigos
 npm run check-deps       # Verifica dependências não utilizadas
 npm run check-dupes      # Verifica arquivos duplicados
 npm run organize         # Organiza arquivos na raiz do projeto
+```
 
-# Dependências
+## 📦 Dependências
+
+```bash
 npm run update-deps      # Atualiza dependências
 npm run audit            # Verifica vulnerabilidades
 npm run audit:fix        # Corrige vulnerabilidades automaticamente
