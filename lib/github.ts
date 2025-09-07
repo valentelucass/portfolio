@@ -300,7 +300,7 @@ function parseFeaturedProject(repo: Repo): FeaturedProject | null {
     demoUrl: meta.demo,
     githubUrl: repo.html_url,
     highlight: meta.highlight,
-    imageUrl: meta.image ? `https://raw.githubusercontent.com/${repo.name}/${repo.name}/main/${meta.image}` : undefined,
+    imageUrl: meta.image ? `https://raw.githubusercontent.com/${repo.owner.login}/${repo.name}/main/${meta.image}` : undefined,
     stars: repo.stargazers_count,
     forks: repo.forks_count,
     updatedAt: repo.updated_at,
