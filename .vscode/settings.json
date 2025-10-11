@@ -1,0 +1,14 @@
+{
+  // Ignora avisos do CSS LSP para diretivas Tailwind/PostCSS
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+
+  // Mantém validação geral de CSS ativa
+  "css.validate": true,
+
+  // Sugestões úteis em strings (classes Tailwind dentro de JSX)
+  "editor.quickSuggestions": {
+    "strings": true
+  }
+}

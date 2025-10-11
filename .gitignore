@@ -32,6 +32,11 @@
 
 # misc
 *.pem
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
 
 # debug
 npm-debug.log*

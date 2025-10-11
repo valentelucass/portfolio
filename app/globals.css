@@ -8,6 +8,13 @@
 
 /* Propriedades padrão para compatibilidade */
 @layer base {
+  /* Para desaparecer o cursor padrão do sistema! */
+  html,
+  body {
+    cursor: none;
+    /* esconde o cursor padrão */
+  }
+
   /* Line-clamp padrão para compatibilidade */
   .line-clamp-1 {
     display: -webkit-box;
@@ -16,7 +23,7 @@
     overflow: hidden;
     line-clamp: 1;
   }
-  
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -24,7 +31,7 @@
     overflow: hidden;
     line-clamp: 2;
   }
-  
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -32,32 +39,32 @@
     overflow: hidden;
     line-clamp: 3;
   }
-  
+
   /* Appearance padrão para compatibilidade */
   .appearance-none {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
   }
-  
+
   /* Vertical-align corrigido para elementos block */
   .align-middle {
     vertical-align: middle;
   }
-  
+
   .align-top {
     vertical-align: top;
   }
-  
+
   .align-bottom {
     vertical-align: bottom;
   }
-  
+
   /* Para elementos inline-block que podem usar vertical-align */
   .inline-block {
     display: inline-block;
   }
-  
+
   .inline-flex {
     display: inline-flex;
   }
@@ -74,7 +81,7 @@
        ======================================== */
     --background: 0 0% 100%;
     --foreground: 210 40% 8%;
-    
+
     /* ========================================
        CORES DE CARDS E POPOVERS
        ======================================== */
@@ -82,7 +89,7 @@
     --card-foreground: 210 40% 8%;
     --popover: 0 0% 100%;
     --popover-foreground: 210 40% 8%;
-    
+
     /* ========================================
        CORES PRIMÁRIAS E SECUNDÁRIAS
        ======================================== */
@@ -90,7 +97,7 @@
     --primary-foreground: 0 0% 98%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 210 40% 8%;
-    
+
     /* ========================================
        CORES MUTED E ACCENT
        ======================================== */
@@ -98,20 +105,20 @@
     --muted-foreground: 215 16% 47%;
     --accent: 210 40% 96%;
     --accent-foreground: 210 40% 8%;
-    
+
     /* ========================================
        CORES DE ESTADO
        ======================================== */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    
+
     /* ========================================
        CORES DE BORDAS E INPUTS
        ======================================== */
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 210 40% 8%;
-    
+
     /* ========================================
        CORES DE GRÁFICOS
        ======================================== */
@@ -120,12 +127,12 @@
     --chart-3: 210 100% 40%;
     --chart-4: 185 100% 55%;
     --chart-5: 220 100% 60%;
-    
+
     /* ========================================
        CONFIGURAÇÕES GERAIS
        ======================================== */
     --radius: 0.5rem;
-    
+
     /* ========================================
        CORES DE SIDEBAR
        ======================================== */
@@ -148,7 +155,7 @@
        ======================================== */
     --background: 222 84% 5%;
     --foreground: 210 40% 98%;
-    
+
     /* ========================================
        CORES DE CARDS E POPOVERS (DARK)
        ======================================== */
@@ -156,7 +163,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 5%;
     --popover-foreground: 210 40% 98%;
-    
+
     /* ========================================
        CORES PRIMÁRIAS E SECUNDÁRIAS (DARK)
        ======================================== */
@@ -164,7 +171,7 @@
     --primary-foreground: 222 84% 5%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
-    
+
     /* ========================================
        CORES MUTED E ACCENT (DARK)
        ======================================== */
@@ -172,20 +179,20 @@
     --muted-foreground: 215 20% 65%;
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
-    
+
     /* ========================================
        CORES DE ESTADO (DARK)
        ======================================== */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    
+
     /* ========================================
        CORES DE BORDAS E INPUTS (DARK)
        ======================================== */
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 212 100% 47%;
-    
+
     /* ========================================
        CORES DE GRÁFICOS (DARK) - Mantidas iguais
        ======================================== */
@@ -194,7 +201,7 @@
     --chart-3: 210 100% 40%;
     --chart-4: 185 100% 55%;
     --chart-5: 220 100% 60%;
-    
+
     /* ========================================
        CORES DE SIDEBAR (DARK)
        ======================================== */
@@ -214,7 +221,7 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
   }
@@ -241,136 +248,137 @@
    ======================================== */
 
 @layer utilities {
+
   /* Container responsivo */
   .container-responsive {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   /* Aspect ratio */
   .aspect-video {
     aspect-ratio: 16 / 9;
   }
-  
+
   .aspect-square {
     aspect-ratio: 1 / 1;
   }
-  
+
   /* Texto com gradiente */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600;
   }
-  
+
   .text-gradient-primary {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500;
   }
-  
+
   .text-gradient-secondary {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-cyan-500;
   }
-  
+
   /* Background com gradiente */
   .bg-gradient-primary {
     @apply bg-gradient-to-r from-cyan-500 to-blue-500;
   }
-  
+
   .bg-gradient-secondary {
     @apply bg-gradient-to-r from-blue-500 to-cyan-500;
   }
-  
+
   .bg-gradient-subtle {
     @apply bg-gradient-to-r from-cyan-500/10 to-blue-500/10;
   }
-  
+
   /* Background glassmórfico */
   .bg-glass {
     @apply bg-white/10 backdrop-blur-sm border border-white/20;
   }
-  
+
   .bg-glass-dark {
     @apply bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50;
   }
-  
+
   /* Hover effects */
   .hover-lift {
     @apply transition-transform duration-300 hover:-translate-y-1;
   }
-  
+
   .hover-scale {
     @apply transition-transform duration-300 hover:scale-105;
   }
-  
+
   .hover-glow {
     @apply transition-shadow duration-300 hover:shadow-lg hover:shadow-cyan-500/25;
   }
-  
+
   .hover-border-glow {
     @apply transition-all duration-300 hover:border-cyan-500/50 hover:shadow-cyan-500/25;
   }
-  
+
   /* Focus states */
   .focus-ring-cyan {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2;
   }
-  
+
   .focus-ring-blue {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
   }
-  
+
   /* Texto responsivo */
   .text-responsive-sm {
     @apply text-sm md:text-base;
   }
-  
+
   .text-responsive-md {
     @apply text-base md:text-lg;
   }
-  
+
   .text-responsive-lg {
     @apply text-lg md:text-xl;
   }
-  
+
   .text-responsive-xl {
     @apply text-xl md:text-2xl;
   }
-  
+
   .text-responsive-2xl {
     @apply text-2xl md:text-3xl;
   }
-  
+
   .text-responsive-3xl {
     @apply text-3xl md:text-4xl;
   }
-  
+
   .text-responsive-4xl {
     @apply text-4xl md:text-5xl;
   }
-  
+
   .text-responsive-5xl {
     @apply text-5xl md:text-6xl;
   }
-  
+
   /* Espaçamento responsivo */
   .space-responsive-sm {
     @apply space-y-4 md:space-y-6;
   }
-  
+
   .space-responsive-md {
     @apply space-y-6 md:space-y-8;
   }
-  
+
   .space-responsive-lg {
     @apply space-y-8 md:space-y-12;
   }
-  
+
   .space-responsive-xl {
     @apply space-y-12 md:space-y-16;
   }
-  
+
   /* Skip link */
   .skip-link {
     @apply absolute -top-10 left-6 z-50 bg-blue-600 text-white px-4 py-2 rounded-md transition-transform duration-300;
   }
-  
+
   .skip-link:focus {
     @apply top-6;
   }
@@ -381,74 +389,75 @@
    ======================================== */
 
 @layer components {
+
   /* Cards Glassmórficos */
   .glassmorphic-card {
     @apply relative overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-6 transition-all duration-300 hover:border-cyan-500/50;
   }
-  
+
   .glassmorphic-card::before {
     content: '';
     @apply absolute -inset-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur opacity-25 hover:opacity-100 transition duration-1000 hover:duration-200;
   }
-  
+
   /* Bordas com Gradiente */
   .gradient-border {
     @apply absolute -inset-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur opacity-25 hover:opacity-100 transition duration-1000 hover:duration-200;
   }
-  
+
   /* Botões com Gradiente */
   .gradient-button {
     @apply bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-blue-500 hover:to-cyan-500 border-0 transition-all duration-300;
   }
-  
+
   .gradient-button-primary {
     @apply bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-cyan-500 hover:to-blue-500 border-0 transition-all duration-300;
   }
-  
+
   /* Cards de Projeto */
   .project-card {
     @apply relative h-full overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 transition-all duration-300 group-hover:border-cyan-500/50;
   }
-  
+
   .project-card-image {
     @apply relative overflow-hidden h-48;
   }
-  
+
   .project-card-overlay {
     @apply absolute inset-0 bg-gradient-to-b from-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10;
   }
-  
+
   /* Cards de Skills */
   .skill-card {
     @apply relative overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-6 h-full transition-all duration-300 hover:border-cyan-500/50;
   }
-  
+
   .skill-progress-bar {
     @apply relative h-2.5 w-full bg-zinc-700 rounded-full overflow-hidden;
   }
-  
+
   .skill-progress-fill {
     @apply absolute top-0 left-0 h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full;
   }
-  
+
   /* Timeline */
   .timeline-item {
     @apply relative overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 p-6 transition-all duration-300 hover:border-cyan-500/50;
   }
-  
+
   .timeline-dot {
     @apply w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 z-10 flex items-center justify-center;
   }
-  
+
   .timeline-dot-inner {
     @apply w-2 h-2 rounded-full bg-white;
   }
-  
+
   /* Responsive utilities */
   .responsive-text {
     @apply text-sm md:text-base;
   }
-  
+
   .responsive-heading {
     @apply text-4xl md:text-5xl;
   }
@@ -515,10 +524,12 @@ body {
 
 /* Cor exclusiva para o texto do botão */
 .btn-custom-color {
-  color: #fff; /* branco, pode trocar para outra cor se quiser */
+  color: #fff;
+  /* branco, pode trocar para outra cor se quiser */
 }
 
 /* Cor exclusiva para o texto informativo */
 .info-custom-color {
-  color: #D4D4D8; /* cinza claro, pode trocar para outra cor se quiser */
+  color: #D4D4D8;
+  /* cinza claro, pode trocar para outra cor se quiser */
 }

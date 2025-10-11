@@ -1,14 +1,13 @@
 "use client"
 
-import { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { getFeaturedProjects } from '@/lib/github'
 import { FeaturedProject } from '@/types/github'
 import { motion } from 'framer-motion'
 import { ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { badgeClass, badgeClassInverted } from "@/components/ui/badge"
+// Removido badgeClass e badgeClassInverted não utilizados
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
@@ -16,50 +15,84 @@ interface FeaturedProjectsProps {
   username: string
 }
 
-// Definição das categorias de projetos
 const PROJECT_CATEGORIES = {
+  DATA: 'Ciência e Análise de Dados',
   WEB: 'Desenvolvimento Web',
-  MOBILE: 'Aplicativos Móveis',
-  DESKTOP: 'Aplicações Desktop',
-  DATA: 'Ciência de Dados',
-  TOOLS: 'Ferramentas e Utilitários',
-  GAMES: 'Jogos',
+  MOBILE: 'Desenvolvimento Mobile',
+  AUTOMATION_SOFTWARE: 'Automação e Engenharia de Software',
   OTHER: 'Outros Projetos'
+};
+
+// 2. FUNÇÃO DE CATEGORIZAÇÃO BASEADA EM PONTUAÇÃO
+function determineCategory(project: FeaturedProject): string {
+  const techs = project.technologies.map(t => t.toLowerCase());
+  const contextText = `${project.name.toLowerCase()} ${project.description.toLowerCase()}`;
+
+  const criteria = {
+    DATA: {
+      strongTechs: ['tensorflow', 'pytorch', 'scikit-learn', 'power bi', 'keras'],
+      techs: ['pandas', 'numpy', 'matplotlib', 'seaborn', 'r'],
+      strongContext: ['machine learning', 'ciência de dados', 'deep learning', 'inteligência artificial', 'ia'],
+      context: ['análise de dados', 'relatório', 'dashboard', 'visualização de dados', 'analytics', 'minutas']
+    },
+    AUTOMATION_SOFTWARE: {
+      strongTechs: ['electron', 'tkinter', 'pyqt', 'java swing', 'javafx', '.net', 'wpf'],
+      techs: ['selenium', 'puppeteer', 'java', 'c#'],
+      strongContext: ['desktop', 'interface gráfica', 'gui', 'aplicação de mesa', 'rpa'],
+      context: ['automação', 'automation', 'script', 'ferramenta', 'cli', 'engenharia de software']
+    },
+    MOBILE: {
+      strongTechs: ['react native', 'flutter', 'swift', 'kotlin'],
+      techs: ['android', 'ios'],
+      strongContext: ['aplicativo móvel', 'app móvel'],
+      context: ['app']
+    },
+    WEB: {
+      strongTechs: ['react', 'angular', 'vue', 'next.js', 'svelte'],
+      techs: ['django', 'flask', 'laravel', 'node.js', 'express', 'php', 'html', 'css', 'javascript', 'typescript'],
+      strongContext: ['aplicação web', 'site', 'página web', 'pwa'],
+      context: ['api', 'frontend', 'backend', 'servidor']
+    }
+  };
+
+  const scores: Record<string, number> = {
+    DATA: 0,
+    WEB: 0,
+    MOBILE: 0,
+    AUTOMATION_SOFTWARE: 0
+  };
+
+  for (const category in criteria) {
+    const rules = criteria[category as keyof typeof criteria];
+    
+    rules.strongTechs.forEach(t => { if (techs.includes(t)) scores[category] += 2; });
+    rules.techs.forEach(t => { if (techs.includes(t)) scores[category] += 1; });
+    rules.strongContext.forEach(c => { if (contextText.includes(c)) scores[category] += 2.5; });
+    rules.context.forEach(c => { if (contextText.includes(c)) scores[category] += 1.5; });
+  }
+
+  const highestScore = Math.max(...Object.values(scores));
+
+  if (highestScore === 0) {
+    return PROJECT_CATEGORIES.OTHER;
+  }
+
+  const winners = Object.keys(scores).filter(cat => scores[cat] === highestScore);
+
+  if (winners.length === 1) {
+    return PROJECT_CATEGORIES[winners[0] as keyof typeof PROJECT_CATEGORIES];
+  }
+  
+  const priority: (keyof typeof PROJECT_CATEGORIES)[] = ['DATA', 'AUTOMATION_SOFTWARE', 'MOBILE', 'WEB'];
+  for (const cat of priority) {
+    if (winners.includes(cat)) {
+      return PROJECT_CATEGORIES[cat];
+    }
+  }
+
+  return PROJECT_CATEGORIES.OTHER;
 }
 
-// Função para determinar a categoria com base nas tecnologias
-function determineCategory(project: FeaturedProject): string {
-  const techs = project.technologies.map(t => t.toLowerCase())
-  
-  if (techs.some(t => ['react native', 'flutter', 'android', 'ios', 'swift', 'kotlin'].includes(t))) {
-    return PROJECT_CATEGORIES.MOBILE
-  }
-  
-  if (techs.some(t => ['electron', 'java', 'swing', 'javafx', '.net', 'wpf', 'winforms'].includes(t))) {
-    return PROJECT_CATEGORIES.DESKTOP
-  }
-  
-  if (techs.some(t => ['python', 'pandas', 'numpy', 'tensorflow', 'pytorch', 'scikit-learn', 'r'].includes(t)) && 
-      !techs.some(t => ['react', 'vue', 'angular', 'next.js'].includes(t))) {
-    return PROJECT_CATEGORIES.DATA
-  }
-  
-  if (techs.some(t => ['unity', 'unreal', 'godot', 'phaser', 'game'].includes(t))) {
-    return PROJECT_CATEGORIES.GAMES
-  }
-  
-  if (techs.some(t => ['cli', 'bash', 'powershell', 'automation'].includes(t)) && 
-      !techs.some(t => ['react', 'vue', 'angular', 'next.js'].includes(t))) {
-    return PROJECT_CATEGORIES.TOOLS
-  }
-  
-  // Default para desenvolvimento web
-  if (techs.some(t => ['react', 'vue', 'angular', 'next.js', 'html5', 'css3', 'javascript', 'typescript', 'node.js', 'express.js', 'php', 'laravel', 'django', 'flask', 'ruby', 'rails'].includes(t))) {
-    return PROJECT_CATEGORIES.WEB
-  }
-  
-  return PROJECT_CATEGORIES.OTHER
-}
 
 export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
   const [projects, setProjects] = useState<FeaturedProject[]>([])
@@ -69,28 +102,28 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
   const [categoryPages, setCategoryPages] = useState<Record<string, number>>({})
   const [showAllProjects, setShowAllProjects] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
+  React.useEffect(() => {
     const loadProjects = async () => {
       // Captura informações para debug sem usar console.log
       const debugLogs: string[] = []
-      
+
       try {
         setLoading(true)
         setError(null)
         setDebugInfo([])
-        
+
         debugLogs.push(`[DEBUG] Iniciando busca de projetos em destaque para: ${username}`)
-        
+
         const featuredProjects = await getFeaturedProjects(username)
-        
+
         // Atribuir categorias aos projetos
         const projectsWithCategories = featuredProjects.map(project => ({
           ...project,
           category: project.category || determineCategory(project)
         }))
-        
+
         setProjects(projectsWithCategories)
-        
+
         // Inicializar páginas das categorias
         const initialCategoryPages: Record<string, number> = {}
         projectsWithCategories.forEach(project => {
@@ -99,11 +132,11 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
           }
         })
         setCategoryPages(initialCategoryPages)
-        
+
         // Define logs relevantes para debug
-        const relevantLogs = debugLogs.filter(log => 
-          log.includes('[DEBUG]') || 
-          log.includes('Erro') || 
+        const relevantLogs = debugLogs.filter(log =>
+          log.includes('[DEBUG]') ||
+          log.includes('Erro') ||
           log.includes('Status') ||
           log.includes('Token') ||
           log.includes('repo') ||
@@ -111,7 +144,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
           log.includes('PORTFOLIO-FEATURED')
         )
         setDebugInfo(relevantLogs)
-        
+
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro desconhecido')
         debugLogs.push(`Erro ao carregar projetos em destaque: ${err instanceof Error ? err.message : 'Erro desconhecido'}`)
@@ -126,7 +159,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
   // Agrupar projetos por categoria
   const projectsByCategory = useMemo(() => {
     const grouped: Record<string, FeaturedProject[]> = {}
-    
+
     projects.forEach(project => {
       const category = project.category || PROJECT_CATEGORIES.OTHER
       if (!grouped[category]) {
@@ -134,24 +167,24 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
       }
       grouped[category].push(project)
     })
-    
+
     return grouped
   }, [projects])
-  
+
   // Função para navegar entre páginas de uma categoria
   const navigateCategory = (category: string, direction: 'next' | 'prev') => {
     setCategoryPages(prev => {
       const currentPage = prev[category] || 0
       const totalProjects = projectsByCategory[category]?.length || 0
       const totalPages = Math.ceil(totalProjects / 3)
-      
+
       let newPage = currentPage
       if (direction === 'next') {
         newPage = (currentPage + 1) % totalPages
       } else {
         newPage = (currentPage - 1 + totalPages) % totalPages
       }
-      
+
       return { ...prev, [category]: newPage }
     })
   }
@@ -162,7 +195,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
       ...prev,
       [category]: !prev[category]
     }));
-    
+
     // Quando voltar para a visualização de página, garantir que estamos na página correta
     if (showAllProjects[category]) {
       setCategoryPages(prev => ({ ...prev, [category]: 0 }));
@@ -173,12 +206,12 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
     return (
       <div className="space-y-8">
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
-        
+
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
           <p className="text-gray-400 mt-2">Carregando projetos do GitHub...</p>
         </div>
-        
+
         {/* Debug Info */}
         <div className="bg-gray-800 p-4 rounded-lg">
           <h4 className="text-sm font-semibold text-blue-400 mb-2">Debug Info:</h4>
@@ -196,12 +229,12 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
     return (
       <div className="space-y-8">
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
-        
+
         <div className="bg-red-900/20 border border-red-500/20 rounded-lg p-4">
           <h3 className="text-red-400 font-semibold mb-2">Erro ao carregar projetos</h3>
           <p className="text-red-300 text-sm">{error}</p>
         </div>
-        
+
         {/* Debug Info */}
         <div className="bg-gray-800 p-4 rounded-lg">
           <h4 className="text-sm font-semibold text-blue-400 mb-2">Debug Info:</h4>
@@ -219,14 +252,14 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
     return (
       <div className="space-y-8">
         <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
-        
+
         <div className="text-center py-12">
           <p className="text-muted-foreground mb-4">Nenhum projeto em destaque encontrado.</p>
           <p className="text-muted-foreground text-sm">
             Adicione <code className="bg-gray-800 px-2 py-1 rounded">{"<!-- PORTFOLIO-FEATURED -->"}</code> no README dos seus projetos para destacá-los aqui.
           </p>
         </div>
-        
+
         {/* Debug Info */}
         <div className="bg-gray-800 p-4 rounded-lg">
           <h4 className="text-sm font-semibold text-blue-400 mb-2">Debug Info:</h4>
@@ -239,7 +272,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
       </div>
     )
   }
-  
+
   // Renderizar um projeto individual
   const renderProject = (project: FeaturedProject, index: number) => (
     <motion.div
@@ -254,7 +287,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
       <div className="relative h-full overflow-hidden rounded-xl bg-zinc-800/50 backdrop-blur-sm border border-zinc-700/50 transition-all duration-300 group-hover:border-cyan-500/50 shadow-lg shadow-cyan-500/5 group-hover:shadow-cyan-500/20 flex flex-col justify-between" style={{ pointerEvents: 'auto', position: 'static', minHeight: '100%' }}>
         {/* Efeito de gradiente na borda */}
         <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-        
+
         {/* Efeito de brilho no canto superior */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-700"></div>
 
@@ -265,7 +298,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
             <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
             {/* Overlay gradiente permanente para legibilidade do texto */}
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent z-10"></div>
-            
+
             <Image
               src={project.imageUrl}
               alt={project.name}
@@ -273,7 +306,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
               height={400}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
-            
+
             {/* Badge de categoria removido conforme solicitado */}
           </div>
         )}
@@ -283,7 +316,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
           <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300">
             {project.name}
           </h3>
-          
+
           {/* Descrição - limitada a 3 linhas */}
           <p className="text-sm md:text-base text-zinc-400 mb-4 text-justify line-clamp-3 overflow-hidden">
             {project.description}
@@ -331,11 +364,11 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
               </CarouselContent>
               {project.technologies?.length > 3 && (
                 <>
-                  <CarouselPrevious 
+                  <CarouselPrevious
                     className="absolute -left-8 top-1/2 -translate-y-1/2 h-6 w-6 bg-zinc-800/80 hover:bg-zinc-700/80"
                     variant="ghost"
                   />
-                  <CarouselNext 
+                  <CarouselNext
                     className="absolute -right-8 top-1/2 -translate-y-1/2 h-6 w-6 bg-zinc-800/80 hover:bg-zinc-700/80"
                     variant="ghost"
                   />
@@ -347,7 +380,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
           {/* Botões com efeito de hover melhorado - ajustados para mesma linha com mais largura */}
           <div className="flex justify-center gap-4 mt-auto pt-4 border-t border-zinc-700/50 relative z-50 h-[60px]" style={{ pointerEvents: 'auto', position: 'relative', marginTop: 'auto' }}>
             {project.githubUrl ? (
-              <a 
+              <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -369,9 +402,9 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                 Código
               </button>
             )}
-            
+
             {project.demoUrl && (
-              <a 
+              <a
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -394,7 +427,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
   return (
     <div className="space-y-12">
       <SectionHeading title="Projetos em Destaque" subtitle="Alguns dos meus trabalhos recentes" />
-      
+
       {/* Renderizar projetos por categoria */}
       {Object.entries(projectsByCategory).length > 0 ? (
         <div className="space-y-8">
@@ -404,12 +437,12 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
             const currentPage = categoryPages[category] || 0
             const startIndex = currentPage * projectsPerPage
             const isShowingAll = showAllProjects[category] || false
-            const visibleProjects = isShowingAll 
-              ? categoryProjects 
+            const visibleProjects = isShowingAll
+              ? categoryProjects
               : categoryProjects.slice(startIndex, startIndex + projectsPerPage)
             const hasMultiplePages = categoryProjects.length > projectsPerPage
             const totalPages = Math.ceil(categoryProjects.length / projectsPerPage)
-            
+
             return (
               <div key={category} className="space-y-6">
                 {/* Título da categoria */}
@@ -420,7 +453,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                   <span className="text-xs font-normal text-zinc-400">
                     {categoryProjects.length} {categoryProjects.length === 1 ? 'projeto' : 'projetos'}
                   </span>
-                  
+
                   <div className="flex items-center gap-2 mt-2">
                     {/* Botão para mostrar todos/menos */}
                     {hasMultiplePages && (
@@ -433,7 +466,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                         {isShowingAll ? 'Mostrar menos' : 'Ver todos os projetos'}
                       </Button>
                     )}
-                    
+
                     {/* Navegação entre páginas */}
                     {hasMultiplePages && !isShowingAll && (
                       <div className="flex items-center gap-2">
@@ -445,11 +478,11 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </Button>
-                        
+
                         <span className="text-xs text-zinc-400 min-w-[40px] text-center">
                           {currentPage + 1}/{totalPages}
                         </span>
-                        
+
                         <Button
                           size="sm"
                           variant="ghost"
@@ -462,12 +495,12 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Grade de projetos */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {visibleProjects.map((project, index) => renderProject(project, index))}
                 </div>
-                
+
                 {/* Navegação entre seções quando mostrando todos os projetos */}
                 {isShowingAll && hasMultiplePages && (
                   <div className="flex justify-center gap-4 mt-6">
@@ -485,7 +518,7 @@ export default function FeaturedProjects({ username }: FeaturedProjectsProps) {
                     </Button>
                   </div>
                 )}
-                
+
                 {/* Indicadores de página */}
                 {hasMultiplePages && !isShowingAll && (
                   <div className="flex justify-center gap-2 mt-3">
