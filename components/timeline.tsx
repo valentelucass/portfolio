@@ -5,18 +5,18 @@ import { useMobile } from "@/hooks/use-mobile"
 
 const experiences = [
   {
-    title: "Desenvolvedor Full-Stack (Projeto Contratado)",
-    company: "Home Service",
+    title: "Desenvolvedor de Software",
+    company: "Rodogarcia",
     period: "2025",
     description:
-      "Desenvolvi a plataforma Home Service do zero em 5 dias, entregando antes do prazo. Fui responsável pela arquitetura e implementação com Node.js, API RESTful, Express, Sequelize e MySQL no back-end, e HTML, CSS e JavaScript no front-end. A plataforma permitiu ao cliente ampliar sua presença digital e otimizar a captação de usuários.",
+      "Integração de sistemas internos e externos, criando automações que substituíram processos manuais por fluxos de dados confiáveis. RPA–TMS: automação em Python que eliminou o revezamento de cinco colaboradores em tarefas repetitivas, reduzindo mais de 30 horas semanais e aumentando a produtividade. ETL: automação em Java para extrair dados de três APIs (REST, GraphQL e DataExport) e integrar oito entidades ao Power BI, eliminando processos manuais e garantindo dados em tempo real. O impacto financeiro veio pela redução de custos operacionais e decisões mais precisas (ex.: otimização de rotas e renegociação de contratos). Atuação técnica com produção de relatórios, documentação de fluxos e APIs, além de apresentações de status. Trabalho sob alta demanda, usando comunicação clara e metodologias ágeis. Próxima etapa: desenvolvimento de dashboards internos para substituir o Power BI, reduzindo custos e ampliando a autonomia na análise de dados.",
   },
   {
     title: "Desenvolvedor Full-Stack (Projeto Contratado)",
-    company: "Easy Rake",
+    company: "Easy Rake e Home Service",
     period: "2025",
     description:
-      "Desenvolvi e implementei o sistema de gestão de caixa Easy Rake para clubes de poker, utilizando PHP, MySQL e JavaScript. Fui responsável pela arquitetura e desenvolvimento de funcionalidades como cadastro e login multi-perfil (Gestor, Caixa, Sanger), controle de sessões de caixa (abertura por inventário, fechamento com reconciliação), gestão de jogadores e transações em tempo real. O sistema otimizou as operações financeiras e o controle de jogadores para clubes de poker.",
+      "Desenvolvi a plataforma Home Service em cinco dias, criando arquitetura e implementação com Node.js, Express, Sequelize e MySQL, além de HTML, CSS e JavaScript no front-end. A solução ajudou o cliente a ampliar presença digital e captar usuários com mais eficiência. Também criei o sistema Easy Rake para gestão de caixa em clubes de poker, usando PHP, MySQL e JavaScript. Implementei login multi-perfil, controle de sessões de caixa, gestão de jogadores e transações em tempo real, melhorando o fluxo financeiro e a organização das operações.",
   },
   {
     title: "Empresário ecommerce",
